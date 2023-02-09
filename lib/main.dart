@@ -6,11 +6,21 @@ import 'package:mazdoor_pk/addService.dart';
 import 'package:mazdoor_pk/homeServices.dart';
 import 'package:mazdoor_pk/homeProducts.dart';
 import 'package:mazdoor_pk/chat.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+// void main() {
+//   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+//       statusBarColor: Colors.transparent,
+//       statusBarIconBrightness: Brightness.dark));
+//   runApp(MyApp());
+// }
+
+Future main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
