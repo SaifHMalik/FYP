@@ -1,6 +1,12 @@
+// import 'dart:html';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/register.dart';
 import 'package:mazdoor_pk/select.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'dart:developer' as logDev;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'createUserModel.dart' as cuModel;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -9,7 +15,100 @@ class Login extends StatefulWidget {
   _MyLoginState createState() => _MyLoginState();
 }
 
+String checkEmail = "";
+String checkName = "";
+
+// class CreateUser {
+//   String? id;
+//   String name;
+//   String email;
+//   String password;
+//   // String cnic;
+//   //String phone;
+
+//   CreateUser({
+//     this.id,
+//     required this.name,
+//     required this.email,
+//     //required this.cnic,
+//     required this.password,
+//     //required this.phone
+//   });
+
+//   setUser(String name, String email, String password) {
+//     this.name = name;
+//     this.email = email;
+//     this.password = password;
+//     //this.phone = phone;
+//   }
+
+//   Map<String, dynamic> toJson() => {
+//         'id': id,
+//         'name': name,
+//         'email': email,
+//         'password': password,
+//         //'phone': phone,
+//       };
+
+//   static CreateUser fromJson(Map<String, dynamic> json) => CreateUser(
+//       id: json['id'],
+//       name: json['name'],
+//       email: json['email'],
+//       password: json['password']);
+
+//   factory CreateUser.fromSnapshot(
+//       DocumentSnapshot<Map<String, dynamic>> document) {
+//     final data = document.data()!;
+
+//     return CreateUser(
+//       id: document.id,
+//       email: data["email"],
+//       password: data["password"],
+//       name: data["name"],
+//     );
+//   }
+// }
+
+// Future<String?> getUserData(String email, String password) async {
+//   String? returnEmail = null;
+
+//   try {
+//     final snapshot = await FirebaseFirestore.instance
+//         .collection("users")
+//         .where("email", isEqualTo: email)
+//         .where("password", isEqualTo: password)
+//         .get();
+
+//     final List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
+//         snapshot.docs;
+//     for (var document in documents) {
+//       print(document.data()["email"]);
+//       print(document.data()["name"]);
+//       returnEmail = document.data()["email"];
+//     }
+//   } on FirebaseException catch (e) {
+//     print(e.toString());
+//     print("Username or Password is Incorrect");
+//   }
+//   // final snapshot = FirebaseFirestore.instance
+//   //     .collection("users")
+//   //     .where("email", isEqualTo: email)
+//   //     .get();
+
+//   // print(snapshot);
+//   return returnEmail;
+// }
+
+print(final msg) {
+  logDev.log(msg);
+}
+
 class _MyLoginState extends State<Login> {
+  final controlEmail = TextEditingController();
+  final controlPassword = TextEditingController();
+  // String? checkEmail;
+  // String? checkName;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,6 +139,7 @@ class _MyLoginState extends State<Login> {
                       child: Column(
                         children: [
                           TextField(
+                            controller: controlEmail,
                             style: const TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                                 fillColor: Colors.grey.shade100,
@@ -53,6 +153,7 @@ class _MyLoginState extends State<Login> {
                             height: 30,
                           ),
                           TextField(
+                            controller: controlPassword,
                             style: const TextStyle(),
                             obscureText: true,
                             decoration: InputDecoration(
@@ -74,11 +175,22 @@ class _MyLoginState extends State<Login> {
                                 backgroundColor: const Color(0xff394d45),
                                 child: IconButton(
                                     color: Colors.white,
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Select()));
+                                    onPressed: () async {
+                                      String? checkEmail =
+                                          await cuModel.getUserData(
+                                              controlEmail.text,
+                                              controlPassword.text);
+                                      if (checkEmail != null) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Select()));
+                                      }
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) => Select()));
                                     },
                                     icon: const Icon(
                                       Icons.arrow_forward,
@@ -93,19 +205,44 @@ class _MyLoginState extends State<Login> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Select()));
+                                onPressed: () async {
+                                  // String? checkEmail = await getUserData(
+                                  //     controlEmail.text, controlPassword.text);
+                                  // if (checkEmail != null) {
+                                  //   Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //           builder: (context) => Select()));
+                                  // }
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => Select()));
                                 },
                                 style: const ButtonStyle(),
                                 child: TextButton(
                                   onPressed: (() {
+                                    // String? checkEmail = await getUserData(
+                                    //     controlEmail.text,
+                                    //     controlPassword.text);
+
+                                    //print(checkEmail);
+
+                                    // if (checkEmail != null) {
+                                    //   Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) => Register(),
+                                    //     ),
+                                    //   );
+                                    // }
+
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Register()));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Register(),
+                                      ),
+                                    );
                                   }),
                                   child: const Text(
                                     'Sign Up',

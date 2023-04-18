@@ -7,6 +7,7 @@ import 'package:mazdoor_pk/homeServices.dart';
 import 'package:mazdoor_pk/homeProducts.dart';
 import 'package:mazdoor_pk/chat.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // void main() {
 //   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
