@@ -3,8 +3,13 @@ import 'dart:ui';
 
 import 'package:mazdoor_pk/homeProducts.dart';
 import 'package:mazdoor_pk/homeServices.dart';
+import 'package:mazdoor_pk/login.dart';
 
 class Select extends StatefulWidget {
+  final String email, pass;
+  const Select({Key? key, required this.email, required this.pass})
+      : super(key: key);
+
   @override
   State<Select> createState() => _SelectState();
 }
@@ -76,8 +81,13 @@ class _SelectState extends State<Select> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeProducts()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeProducts(
+                            email: widget.email,
+                            pass: widget.pass,
+                          )));
             },
             child: Container(
               width: double.infinity,
@@ -116,7 +126,10 @@ class _SelectState extends State<Select> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeServices()));
+                              builder: (context) => HomeServices(
+                                    email: widget.email,
+                                    pass: widget.pass,
+                                  )));
                     },
                     child: Container(
                       width: double.infinity,

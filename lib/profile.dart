@@ -1,19 +1,70 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/login.dart';
+import 'login.dart' as lg;
+import 'createUserModel.dart' as cu;
+
+// final userName = await cu.getUserName();
+//String name = lg.checkName; // use this
 
 // ignore: camel_case_types
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
-
+  // const Profile({Key? key}) : super(key: key);
+  final String email, pass;
+  const Profile({Key? key, required this.email, required this.pass})
+      : super(key: key);
   @override
   State<Profile> createState() => ProfileState();
 }
 
 // ignore: camel_case_types
 class ProfileState extends State<Profile> {
+  // String name = "Name Loading";
+  // String email = "Email Loading";
+  // late User user;
+
+  // Future<void> getData() async {
+  //   //User? user = await FirebaseAuth.instance.currentUser;
+  //   User userData = await FirebaseAuth.instance.currentUser!;
+
+  //   var vari = await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(user.uid)
+  //       .get();
+
+  //   setState(() {
+  //     user = userData;
+  //     print(userData.uid);
+  //     name = vari.data()?['name'];
+  //     email = vari.data()?['email'];
+  //   });
+  // }
+
+  // Future<void> getData() async {
+  //   name = "ABCDE";
+  //   print(name);
+  //   // User userData = await FirebaseAuth.instance.currentUser!;
+  //   // print(userData);
+
+  //   try {
+  //     User userData = await FirebaseAuth.instance.currentUser!;
+  //     // do something with userData
+  //   } catch (e) {
+  //     print("Error There is no user logged in");
+  //     // handle the exception if the currentUser is null
+  //   }
+  // }
+
   @override
+  void initState() {
+    super.initState();
+    print("123456");
+    print(lg.checkName);
+  }
+
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -41,7 +92,7 @@ class ProfileState extends State<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Huzaifa Shamoon',
+                                widget.email,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize:
@@ -60,7 +111,7 @@ class ProfileState extends State<Profile> {
                                             10,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: 'Nunito'),
-                              )
+                              ),
                             ],
                           )
                         ],
