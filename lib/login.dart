@@ -1,38 +1,105 @@
-// import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/register.dart';
 import 'package:mazdoor_pk/select.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'dart:developer' as logDev;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'createUserModel.dart' as cuModel;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  _MyLoginState createState() => _MyLoginState();
+  _LoginState createState() => _LoginState();
 }
 
-String checkEmail = "";
-String checkName = "";
+class UserInfo {
+  String? id;
+  String name;
+  String email;
+  String password;
+  String bio;
+  double money;
 
-// String getName() {
-//   print("45555");
-//   print(checkEmail);
-//   return checkEmail;
-// }
+  UserInfo({
+    this.id,
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.money,
+    required this.bio,
+  });
 
-print(final msg) {
-  logDev.log(msg);
+  setUserInfo(String name, String email, String password) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.bio = "N\A";
+    this.money = 0;
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'bio': bio,
+        'money': money,
+      };
+
+  static UserInfo fromJson(Map<String, dynamic> json) => UserInfo(
+        id: json['id'],
+        name: json['name'],
+        email: json['email'],
+        password: json['password'],
+        money: json['money'],
+        bio: json['bio'],
+      );
+
+  factory UserInfo.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
+    final data = document.data()!;
+
+    return UserInfo(
+      id: document.id,
+      email: data["email"],
+      password: data["password"],
+      name: data["name"],
+      money: data["money"],
+      bio: data["bio"],
+    );
+  }
 }
 
-class _MyLoginState extends State<Login> {
-  final controlEmail = TextEditingController();
-  final controlPassword = TextEditingController();
-  // String? checkEmail;
-  // String? checkName;
+class _LoginState extends State<Login> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // Initialize FirebaseAuth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Function to log in the user
+  Future<void> loginUser() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Navigate to new screen on successful login
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Select(
+            email: _emailController.text,
+            pass: _passwordController.text,
+          ),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle login errors here
+      print('Error logging in: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +131,7 @@ class _MyLoginState extends State<Login> {
                       child: Column(
                         children: [
                           TextField(
-                            controller: controlEmail,
+                            controller: _emailController,
                             style: const TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                                 fillColor: Colors.grey.shade100,
@@ -78,7 +145,7 @@ class _MyLoginState extends State<Login> {
                             height: 30,
                           ),
                           TextField(
-                            controller: controlPassword,
+                            controller: _passwordController,
                             style: const TextStyle(),
                             obscureText: true,
                             decoration: InputDecoration(
@@ -101,24 +168,7 @@ class _MyLoginState extends State<Login> {
                                 child: IconButton(
                                     color: Colors.white,
                                     onPressed: () async {
-                                      String? checkEmail =
-                                          await cuModel.getUserData(
-                                              controlEmail.text,
-                                              controlPassword.text);
-                                      if (checkEmail != null) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => Select(
-                                                      email: controlEmail.text,
-                                                      pass:
-                                                          controlPassword.text,
-                                                    )));
-                                      }
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => Select()));
+                                      loginUser();
                                     },
                                     icon: const Icon(
                                       Icons.arrow_forward,
@@ -133,38 +183,10 @@ class _MyLoginState extends State<Login> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
-                                onPressed: () async {
-                                  // String? checkEmail = await getUserData(
-                                  //     controlEmail.text, controlPassword.text);
-                                  // if (checkEmail != null) {
-                                  //   Navigator.push(
-                                  //       context,
-                                  //       MaterialPageRoute(
-                                  //           builder: (context) => Select()));
-                                  // }
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => Select()));
-                                },
+                                onPressed: () async {},
                                 style: const ButtonStyle(),
                                 child: TextButton(
                                   onPressed: (() {
-                                    // String? checkEmail = await getUserData(
-                                    //     controlEmail.text,
-                                    //     controlPassword.text);
-
-                                    //print(checkEmail);
-
-                                    // if (checkEmail != null) {
-                                    //   Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => Register(),
-                                    //     ),
-                                    //   );
-                                    // }
-
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(

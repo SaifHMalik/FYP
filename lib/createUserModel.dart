@@ -78,40 +78,6 @@ class CreateUser {
   }
 }
 
-// Future<String?> getUserData(String email, String password) async {
-//   String? returnEmail = null;
-
-//   try {
-//     final snapshot = await FirebaseFirestore.instance
-//         .collection("users")
-//         .where("email", isEqualTo: email)
-//         .where("password", isEqualTo: password)
-//         .get();
-
-//     final List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
-//         snapshot.docs;
-//     for (var document in documents) {
-//       print(document.data()["email"]);
-//       print(document.data()["name"]);
-//       returnEmail = document.data()["email"];
-//     }
-
-//     UserCredential userCredential = await FirebaseAuth.instance
-//         .signInWithEmailAndPassword(email: email, password: password);
-//     User userData = userCredential.user!;
-//   } on FirebaseException catch (e) {
-//     print(e.toString());
-//     print("Username or Password is Incorrect");
-//   }
-//   // final snapshot = FirebaseFirestore.instance
-//   //     .collection("users")
-//   //     .where("email", isEqualTo: email)
-//   //     .get();
-
-//   // print(snapshot);
-//   return returnEmail;
-// }
-
 Future<String?> getUserData(String email, String password) async {
   String? returnEmail = null;
 
@@ -152,47 +118,6 @@ Future<String?> getUserData(String email, String password) async {
 
 Future create_user(CreateUser user) async {
   final auth = FirebaseAuth.instance;
-  // bool checkingRegisteration = false;
-
-  // try {
-  //   print("0");
-  //   List<String> registerAlready =
-  //       await auth.fetchSignInMethodsForEmail(user.email);
-
-  //   //print(registerAlready); causing error
-  //   print("1");
-  //   for (String method in registerAlready) {
-  //     if (method == "password") {
-  //       print("user with this email aready exists");
-  //       checkingRegisteration = true;
-  //     }
-  //   }
-
-  //   print("2");
-  //   if (checkingRegisteration = false) {
-  //     print("user with this email aready exists");
-  //   } else {
-  //     final docUser =
-  //         FirebaseFirestore.instance.collection("users").doc("user1");
-  //     final json = user.toJson();
-  //     await docUser.set(json);
-
-  //     try {
-  //       final register = await auth.createUserWithEmailAndPassword(
-  //           email: user.email, password: user.password);
-  //     } on FirebaseAuthException catch (e) {
-  //       print(e.toString());
-  //       print("Error registering");
-  //     }
-  //   }
-  // } on FirebaseAuthException catch (e) {
-  //   print("data provided is not valid");
-  //   print(e.toString());
-  // }
-
-  // final docUser = FirebaseFirestore.instance.collection("users").doc("user1");
-  // final json = user.toJson();
-  // await docUser.set(json);
 
   try {
     final register = await auth.createUserWithEmailAndPassword(
@@ -210,30 +135,4 @@ Future create_user(CreateUser user) async {
 
 print(final msg) {
   logDev.log(msg);
-}
-
-Future<String?> getUserName() async {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // await FirebaseAuth.instance.authStateChanges().first;
-
-  String? userID = _auth.currentUser!.uid;
-
-  final userDoc =
-      await _firestore.collection('users').where('id', isEqualTo: userID).get();
-  print("0");
-
-  try {
-    //final userName = userDoc.docs[0].data()['name'];
-    final userName = "Saif";
-    print(userName);
-    print("1234567890");
-    return userName;
-  } on FirebaseException catch (e) {
-    print(e.toString());
-    print("Error");
-  }
-
-  return "Malik";
 }

@@ -4,11 +4,58 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/login.dart';
-import 'login.dart' as lg;
+//import 'login.dart' as lg;
 import 'createUserModel.dart' as cu;
 
 // final userName = await cu.getUserName();
 //String name = lg.checkName; // use this
+FirebaseAuth auth = FirebaseAuth.instance;
+User? user = auth.currentUser;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+String? getUserEmail() {
+  return user?.email;
+}
+
+String? getUserId() {
+  return user?.uid;
+}
+
+// Future<String?> getUserName() async {
+//   if (user != null) {
+//     final DocumentSnapshot userDoc =
+//         await _firestore.collection("users").doc(user?.uid).get();
+
+//     String? userName = userDoc.get('name');
+
+//     return userName;
+//   }
+
+//   return null;
+// }
+
+// String? userName;
+
+// Future<void> loadUserName() async {
+//   DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc('userId').get();
+
+//   if (userDoc.exists) {
+//     userName = userDoc.get('name') as String?;
+//   } else {
+//     print('User document does not exist or does not contain a name field');
+//   }
+// }
+
+Future<String?> getUSerBio() async {
+  if (user != null) {
+    final DocumentSnapshot userDoc =
+        await _firestore.collection("users").doc(user?.uid).get();
+
+    return userDoc['bio'];
+  }
+
+  return null;
+}
 
 // ignore: camel_case_types
 class Profile extends StatefulWidget {
@@ -22,48 +69,37 @@ class Profile extends StatefulWidget {
 
 // ignore: camel_case_types
 class ProfileState extends State<Profile> {
-  // String name = "Name Loading";
-  // String email = "Email Loading";
-  // late User user;
+  String? userName;
 
-  // Future<void> getData() async {
-  //   //User? user = await FirebaseAuth.instance.currentUser;
-  //   User userData = await FirebaseAuth.instance.currentUser!;
+  Future<String?> loadUserName() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: user?.email)
+        .get();
 
-  //   var vari = await FirebaseFirestore.instance
-  //       .collection("users")
-  //       .doc(user.uid)
-  //       .get();
-
-  //   setState(() {
-  //     user = userData;
-  //     print(userData.uid);
-  //     name = vari.data()?['name'];
-  //     email = vari.data()?['email'];
-  //   });
-  // }
-
-  // Future<void> getData() async {
-  //   name = "ABCDE";
-  //   print(name);
-  //   // User userData = await FirebaseAuth.instance.currentUser!;
-  //   // print(userData);
-
-  //   try {
-  //     User userData = await FirebaseAuth.instance.currentUser!;
-  //     // do something with userData
-  //   } catch (e) {
-  //     print("Error There is no user logged in");
-  //     // handle the exception if the currentUser is null
-  //   }
-  // }
+    if (querySnapshot.docs.isNotEmpty) {
+      String name = querySnapshot.docs.first['name'];
+      cu.print(querySnapshot.docs.first['name']);
+      return name;
+    } else {
+      return null;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    print("123456");
-    print(lg.checkName);
+    getUserEmail();
+    loadUserName();
   }
+
+  //String? uName = getUSerName();
+  //final uBio = getUSerBio();
+
+  // String? uName;
+  // Future<void> loadUserName() async {
+  //   uName = await getUserName();
+  // }
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -92,7 +128,7 @@ class ProfileState extends State<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.email,
+                                userName ?? "Loading...",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize:
