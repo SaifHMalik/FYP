@@ -17,6 +17,7 @@ class UserInfo {
   String email;
   String password;
   String bio;
+  String job;
   double money;
 
   UserInfo({
@@ -26,6 +27,7 @@ class UserInfo {
     required this.password,
     required this.money,
     required this.bio,
+    required this.job,
   });
 
   setUserInfo(String name, String email, String password) {
@@ -34,6 +36,7 @@ class UserInfo {
     this.password = password;
     this.bio = "N\A";
     this.money = 0;
+    this.job = "N\A";
   }
 
   Map<String, dynamic> toJson() => {
@@ -43,6 +46,7 @@ class UserInfo {
         'password': password,
         'bio': bio,
         'money': money,
+        'job': job,
       };
 
   static UserInfo fromJson(Map<String, dynamic> json) => UserInfo(
@@ -52,6 +56,7 @@ class UserInfo {
         password: json['password'],
         money: json['money'],
         bio: json['bio'],
+        job: json['job'],
       );
 
   factory UserInfo.fromSnapshot(
@@ -65,6 +70,7 @@ class UserInfo {
       name: data["name"],
       money: data["money"],
       bio: data["bio"],
+      job: data["job"],
     );
   }
 }

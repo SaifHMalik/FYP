@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/login.dart';
+import 'personalInformation.dart';
 //import 'login.dart' as lg;
 import 'createUserModel.dart' as cu;
 
@@ -21,16 +22,16 @@ String? getUserId() {
   return user?.uid;
 }
 
-Future<String?> getUSerBio() async {
-  if (user != null) {
-    final DocumentSnapshot userDoc =
-        await _firestore.collection("users").doc(user?.uid).get();
+// Future<String?> getUSerBio() async {
+//   if (user != null) {
+//     final DocumentSnapshot userDoc =
+//         await _firestore.collection("users").doc(user?.uid).get();
 
-    return userDoc['bio'];
-  }
+//     return userDoc['bio'];
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 // ignore: camel_case_types
 class Profile extends StatefulWidget {
@@ -42,31 +43,12 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => ProfileState();
 }
 
-// Future<String?> loadUserName() async {
-
-//   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-//       .collection('users')
-//       .where('email', isEqualTo: user?.email)
-//       .get();
-
-//   if (querySnapshot.docs.isNotEmpty) {
-//     String name = querySnapshot.docs.first['name'];
-//     cu.print(querySnapshot.docs.first['name']);
-//     return name;
-//   } else {
-//     return null;
-//   }
-// }
-
 // ignore: camel_case_types
 class ProfileState extends State<Profile> {
-  // String? userName;
-
-  // Future<void> getName() async {
-  //   userName = await loadUserName();
-  // }
-
   String name = "Name loading...";
+  String bio = "Bio Loading...";
+  // String money = "Money Loading...";
+  int money = 0;
 
   void getData() async {
     var vari = await FirebaseFirestore.instance
@@ -76,6 +58,8 @@ class ProfileState extends State<Profile> {
 
     setState(() {
       name = vari.docs.first.data()['name'];
+      bio = vari.docs.first.data()['bio'];
+      money = vari.docs.first.data()['money'];
     });
   }
 
@@ -151,10 +135,9 @@ class ProfileState extends State<Profile> {
                         ],
                       ),
                     ),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.all(20),
-                      child: Text(
-                          'This is Bio of the user. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      child: Text(bio,
                           style: TextStyle(
                               fontFamily: 'Nunito',
                               fontWeight: FontWeight.w500)),
@@ -169,8 +152,8 @@ class ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Column(
-                          children: const [
-                            Text('PKR 104,580.00',
+                          children: [
+                            Text(money.toString(),
                                 style: TextStyle(
                                     fontSize: 15,
                                     fontFamily: 'Nunito',
@@ -219,7 +202,14 @@ class ProfileState extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PersonalInfoScreen(),
+                                  ),
+                                );
+                              },
                               child: Row(
                                 children: const [
                                   Padding(
