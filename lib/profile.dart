@@ -21,31 +21,6 @@ String? getUserId() {
   return user?.uid;
 }
 
-// Future<String?> getUserName() async {
-//   if (user != null) {
-//     final DocumentSnapshot userDoc =
-//         await _firestore.collection("users").doc(user?.uid).get();
-
-//     String? userName = userDoc.get('name');
-
-//     return userName;
-//   }
-
-//   return null;
-// }
-
-// String? userName;
-
-// Future<void> loadUserName() async {
-//   DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc('userId').get();
-
-//   if (userDoc.exists) {
-//     userName = userDoc.get('name') as String?;
-//   } else {
-//     print('User document does not exist or does not contain a name field');
-//   }
-// }
-
 Future<String?> getUSerBio() async {
   if (user != null) {
     final DocumentSnapshot userDoc =
@@ -67,31 +42,49 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => ProfileState();
 }
 
+// Future<String?> loadUserName() async {
+
+//   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+//       .collection('users')
+//       .where('email', isEqualTo: user?.email)
+//       .get();
+
+//   if (querySnapshot.docs.isNotEmpty) {
+//     String name = querySnapshot.docs.first['name'];
+//     cu.print(querySnapshot.docs.first['name']);
+//     return name;
+//   } else {
+//     return null;
+//   }
+// }
+
 // ignore: camel_case_types
 class ProfileState extends State<Profile> {
-  String? userName;
+  // String? userName;
 
-  Future<String?> loadUserName() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  // Future<void> getName() async {
+  //   userName = await loadUserName();
+  // }
+
+  String name = "Name loading...";
+
+  void getData() async {
+    var vari = await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: user?.email)
         .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      String name = querySnapshot.docs.first['name'];
-      cu.print(querySnapshot.docs.first['name']);
-      return name;
-    } else {
-      return null;
-    }
+    setState(() {
+      name = vari.docs.first.data()['name'];
+    });
   }
 
   @override
-  void initState() {
-    super.initState();
-    getUserEmail();
-    loadUserName();
-  }
+  // Future<void> initState() async {
+  //   super.initState();
+  //   getUserEmail();
+  //   getName();
+  // }
 
   //String? uName = getUSerName();
   //final uBio = getUSerBio();
@@ -100,6 +93,11 @@ class ProfileState extends State<Profile> {
   // Future<void> loadUserName() async {
   //   uName = await getUserName();
   // }
+
+  void initState() {
+    getData();
+    super.initState();
+  }
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -128,7 +126,7 @@ class ProfileState extends State<Profile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                userName ?? "Loading...",
+                                name,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize:
