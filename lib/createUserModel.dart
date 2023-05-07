@@ -8,6 +8,9 @@ class CreateUser {
   String name;
   String email;
   String password;
+  String bio;
+  String job;
+  int money;
   // String cnic;
   //String phone;
 
@@ -15,16 +18,19 @@ class CreateUser {
     this.id,
     required this.name,
     required this.email,
-    //required this.cnic,
     required this.password,
-    //required this.phone
+    required this.money,
+    required this.bio,
+    required this.job,
   });
 
   setUser(String name, String email, String password) {
     this.name = name;
     this.email = email;
     this.password = password;
-    //this.phone = phone;
+    this.bio = "N\A";
+    this.money = 0;
+    this.job = "N\A";
   }
 
   Map<String, dynamic> toJson() => {
@@ -32,14 +38,20 @@ class CreateUser {
         'name': name,
         'email': email,
         'password': password,
-        //'phone': phone,
+        'bio': bio,
+        'money': money,
+        'job': job,
       };
 
   static CreateUser fromJson(Map<String, dynamic> json) => CreateUser(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password']);
+        id: json['id'],
+        name: json['name'],
+        email: json['email'],
+        password: json['password'],
+        money: json['money'],
+        bio: json['bio'],
+        job: json['job'],
+      );
 
   factory CreateUser.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
@@ -50,6 +62,9 @@ class CreateUser {
       email: data["email"],
       password: data["password"],
       name: data["name"],
+      money: data["money"],
+      bio: data["bio"],
+      job: data["job"],
     );
   }
 
@@ -124,9 +139,11 @@ Future create_user(CreateUser user) async {
         email: user.email, password: user.password);
     //final docUser = FirebaseFirestore.instance.collection("users").doc("user1");
     final docUser = FirebaseFirestore.instance.collection("users").doc();
-    user.id = docUser.id;
+    User? userA = auth.currentUser;
+    user.id = userA?.uid;
     final json = user.toJson();
     await docUser.set(json);
+    await FirebaseAuth.instance.signOut();
   } on FirebaseAuthException catch (e) {
     print(e.toString());
     print("Error registering");

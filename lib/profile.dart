@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/login.dart';
+import 'package:mazdoor_pk/myWallet.dart';
 import 'personalInformation.dart';
 //import 'login.dart' as lg;
 import 'createUserModel.dart' as cu;
@@ -22,6 +23,9 @@ String? getUserId() {
   return user?.uid;
 }
 
+void printingData(final msg) {
+  cu.print(msg);
+}
 // Future<String?> getUSerBio() async {
 //   if (user != null) {
 //     final DocumentSnapshot userDoc =
@@ -35,10 +39,10 @@ String? getUserId() {
 
 // ignore: camel_case_types
 class Profile extends StatefulWidget {
-  // const Profile({Key? key}) : super(key: key);
-  final String email, pass;
-  const Profile({Key? key, required this.email, required this.pass})
-      : super(key: key);
+  const Profile({Key? key}) : super(key: key);
+  // final String email, pass;
+  // const Profile({Key? key, required this.email, required this.pass})
+  //     : super(key: key);
   @override
   State<Profile> createState() => ProfileState();
 }
@@ -48,18 +52,23 @@ class ProfileState extends State<Profile> {
   String name = "Name loading...";
   String bio = "Bio Loading...";
   // String money = "Money Loading...";
-  int money = 0;
+  double money = 0;
 
   void getData() async {
+    printingData("0");
     var vari = await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: user?.email)
         .get();
-
+    printingData("1");
     setState(() {
+      printingData("2");
       name = vari.docs.first.data()['name'];
+      printingData("3");
       bio = vari.docs.first.data()['bio'];
+      printingData("4");
       money = vari.docs.first.data()['money'];
+      printingData("5");
     });
   }
 
@@ -79,6 +88,8 @@ class ProfileState extends State<Profile> {
   // }
 
   void initState() {
+    cu.print(user?.uid);
+    cu.print(user?.email);
     getData();
     super.initState();
   }
@@ -227,7 +238,14 @@ class ProfileState extends State<Profile> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyWalllet(),
+                                  ),
+                                );
+                              },
                               child: Row(
                                 children: const [
                                   Padding(
@@ -317,7 +335,8 @@ class ProfileState extends State<Profile> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                await FirebaseAuth.instance.signOut();
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

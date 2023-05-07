@@ -10,10 +10,10 @@ import 'package:line_icons/line_icons.dart';
 
 // ignore: camel_case_types
 class HomeServices extends StatefulWidget {
-  // const HomeServices({Key? key}) : super(key: key);
-  final String email, pass;
-  const HomeServices({Key? key, required this.email, required this.pass})
-      : super(key: key);
+  const HomeServices({Key? key}) : super(key: key);
+  // final String email, pass;
+  // const HomeServices({Key? key, required this.email, required this.pass})
+  //     : super(key: key);
   @override
   State<HomeServices> createState() => HomeServicesState();
 }
@@ -32,11 +32,7 @@ class HomeServicesState extends State<HomeServices> {
             Center(child: ServiceList()),
             Center(child: ServicesPosted()),
             Center(child: Notifications()),
-            Center(
-                child: Profile(
-              email: widget.email,
-              pass: widget.pass,
-            )),
+            Center(child: Profile()),
           ],
         ),
         bottomNavigationBar: SafeArea(

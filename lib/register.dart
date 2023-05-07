@@ -156,10 +156,14 @@ class _MyRegisterState extends State<Register> {
                                     // }),
                                     onPressed: (() {
                                       final createUser = cu.CreateUser(
-                                          name: controlName.text,
-                                          email: controlEmail.text,
-                                          password: controlPassword.text,
-                                          id: "1");
+                                        name: controlName.text,
+                                        email: controlEmail.text,
+                                        password: controlPassword.text,
+                                        id: "1",
+                                        money: 0,
+                                        bio: "N\A",
+                                        job: "N\A",
+                                      );
 
                                       cu.create_user(createUser);
 
@@ -186,10 +190,14 @@ class _MyRegisterState extends State<Register> {
                                 child: TextButton(
                                   onPressed: (() {
                                     final createUser = cu.CreateUser(
-                                        name: controlName.text,
-                                        email: controlEmail.text,
-                                        password: controlPassword.text,
-                                        id: "1");
+                                      name: controlName.text,
+                                      email: controlEmail.text,
+                                      password: controlPassword.text,
+                                      id: "1",
+                                      money: 0,
+                                      bio: "N\A",
+                                      job: "N\A",
+                                    );
 
                                     cu.create_user(createUser);
 

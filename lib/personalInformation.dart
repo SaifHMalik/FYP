@@ -96,8 +96,7 @@ class PersonalInfoState extends State<PersonalInfoScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  HomeProducts(email: "", pass: ""),
+                              builder: (context) => HomeProducts(),
                             ),
                           );
                         },
@@ -117,8 +116,7 @@ class PersonalInfoState extends State<PersonalInfoScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  HomeProducts(email: "", pass: ""),
+                              builder: (context) => HomeProducts(),
                             ),
                           );
                         },

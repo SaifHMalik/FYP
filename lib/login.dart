@@ -95,10 +95,7 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Select(
-            email: _emailController.text,
-            pass: _passwordController.text,
-          ),
+          builder: (context) => Select(),
         ),
       );
     } on FirebaseAuthException catch (e) {
