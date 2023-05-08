@@ -7,6 +7,7 @@ import 'package:mazdoor_pk/productsPosted.dart';
 import 'package:mazdoor_pk/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
+import 'productList1.dart';
 
 // ignore: camel_case_types
 class HomeProducts extends StatefulWidget {
@@ -29,7 +30,7 @@ class HomeProductsState extends State<HomeProducts> {
       body: PageView(
         controller: _pageController,
         children: <Widget>[
-          Center(child: ProductList()),
+          Center(child: ProductList1()),
           Center(child: ProductsPosted()),
           Center(child: Notifications()),
           Center(child: Profile()),

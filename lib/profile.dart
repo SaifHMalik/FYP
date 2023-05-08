@@ -26,16 +26,6 @@ String? getUserId() {
 void printingData(final msg) {
   cu.print(msg);
 }
-// Future<String?> getUSerBio() async {
-//   if (user != null) {
-//     final DocumentSnapshot userDoc =
-//         await _firestore.collection("users").doc(user?.uid).get();
-
-//     return userDoc['bio'];
-//   }
-
-//   return null;
-// }
 
 // ignore: camel_case_types
 class Profile extends StatefulWidget {
@@ -51,7 +41,6 @@ class Profile extends StatefulWidget {
 class ProfileState extends State<Profile> {
   String name = "Name loading...";
   String bio = "Bio Loading...";
-  // String money = "Money Loading...";
   double money = 0;
 
   void getData() async {
@@ -60,33 +49,15 @@ class ProfileState extends State<Profile> {
         .collection('users')
         .where('email', isEqualTo: user?.email)
         .get();
-    printingData("1");
+
     setState(() {
-      printingData("2");
       name = vari.docs.first.data()['name'];
-      printingData("3");
       bio = vari.docs.first.data()['bio'];
-      printingData("4");
       money = vari.docs.first.data()['money'];
-      printingData("5");
     });
   }
 
   @override
-  // Future<void> initState() async {
-  //   super.initState();
-  //   getUserEmail();
-  //   getName();
-  // }
-
-  //String? uName = getUSerName();
-  //final uBio = getUSerBio();
-
-  // String? uName;
-  // Future<void> loadUserName() async {
-  //   uName = await getUserName();
-  // }
-
   void initState() {
     cu.print(user?.uid);
     cu.print(user?.email);
