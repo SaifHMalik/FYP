@@ -10,44 +10,25 @@ class ProductList1 extends StatefulWidget {
 }
 
 class _ProductListState1 extends State<ProductList1> {
-  int index = 2;
-
-  void getDocumentCount() async {
-    final QuerySnapshot<Map<String, dynamic>> snapshot =
-        await FirebaseFirestore.instance.collection('Product').get();
-    setState(() {
-      index = snapshot.docs.length;
-    });
-  }
-
   @override
-  void initState() {
-    getDocumentCount();
-    super.initState();
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Container(
-          child: ListView.separated(
-            itemCount: index,
-            itemBuilder: (context, index) {
-              return Container(
-                child: Column(
-                  children: [
-                    Text("Item ${index + 1}"),
-                  ],
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return Divider(
-                height: 20,
-              );
-            },
-          ),
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('Product').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("Connection Error");
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Loading...");
+            }
+
+            var docs = snapshot.data!.docs;
+            return Text('${docs.length}');
+          },
         ),
       ),
     );
