@@ -27,7 +27,18 @@ class _ProductListState1 extends State<ProductList1> {
             }
 
             var docs = snapshot.data!.docs;
-            return Text('${docs.length}');
+            return ListView.separated(
+                itemCount: docs.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Text("${docs[index]["basePrice"]}"),
+                    ],
+                  );
+                },
+                separatorBuilder: (context, Index) {
+                  return Divider();
+                });
           },
         ),
       ),
