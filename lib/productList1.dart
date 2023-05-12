@@ -32,9 +32,33 @@ class _ProductListState1 extends State<ProductList1> {
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
-                      Text("${docs[index]["basePrice"]}"),
-                    ],
-                  );
+                      // Text("${docs[index]["basePrice"]}"),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 0,
+                                    blurRadius: 12,
+                                    offset: const Offset(
+                                        0, 4), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ], //
+                  ); //
                 },
                 separatorBuilder: (context, Index) {
                   return Divider();

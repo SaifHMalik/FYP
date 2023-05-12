@@ -1,8 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // ignore: camel_case_types
 class ProductView extends StatefulWidget {
-  const ProductView({Key? key}) : super(key: key);
+  final title;
+  final description;
+  final sellerEmail;
+  final basePrice;
+  final actualPrice;
+  final category;
+  final seller;
+
+  const ProductView({
+    Key? key,
+    required this.title,
+    required this.sellerEmail,
+    required this.description,
+    required this.basePrice,
+    required this.actualPrice,
+    required this.category,
+    required this.seller,
+  }) : super(key: key);
 
   @override
   State<ProductView> createState() => ProductViewState();
@@ -10,7 +28,26 @@ class ProductView extends StatefulWidget {
 
 // ignore: camel_case_types
 class ProductViewState extends State<ProductView> {
+  final firebase = FirebaseFirestore.instance.collection("users");
+  String userName = "";
+
+  Future<void> getUser() async {
+    final query =
+        await firebase.where("userEmail", isEqualTo: widget.sellerEmail).get();
+    if (query.docs.isNotEmpty) {
+      final user = query.docs.first.data();
+      setState(() {
+        userName = user['userName'];
+      });
+    }
+  }
+
   @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -44,15 +81,14 @@ class ProductViewState extends State<ProductView> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                            'Samsung Galaxy A20E SM-A202F/DS 32GB Black Mobile Smart Phone UNLOCKED',
+                                        Text(widget.title,
                                             style: TextStyle(
                                                 fontSize: 23,
                                                 fontFamily: 'Nunito',
                                                 fontWeight: FontWeight.w600)),
                                         const SizedBox(height: 15),
                                         Row(
-                                          children: const [
+                                          children: [
                                             CircleAvatar(
                                               backgroundImage:
                                                   AssetImage('profile.jpg'),
@@ -60,14 +96,13 @@ class ProductViewState extends State<ProductView> {
                                             SizedBox(
                                               width: 10,
                                             ),
-                                            Text('Vinesh Juriasinghani',
+                                            Text("${userName}",
                                                 style: TextStyle(
                                                     fontFamily: 'Nunito')),
                                           ],
                                         ),
                                         const SizedBox(height: 10),
-                                        const Text(
-                                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                        Text(widget.description,
                                             style: TextStyle(
                                                 fontFamily: 'Nunito')),
                                         const SizedBox(height: 20),
@@ -186,7 +221,20 @@ class ProductViewState extends State<ProductView> {
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
-                                                                const ProductView()));
+                                                                const ProductView(
+                                                                  actualPrice:
+                                                                      null,
+                                                                  basePrice:
+                                                                      null,
+                                                                  category:
+                                                                      null,
+                                                                  description:
+                                                                      null,
+                                                                  seller: null,
+                                                                  sellerEmail:
+                                                                      null,
+                                                                  title: null,
+                                                                )));
                                                   })),
                                                   child: const Text('PLACE BID',
                                                       style: TextStyle(

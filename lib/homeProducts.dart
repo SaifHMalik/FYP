@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/notifications.dart';
-import 'package:mazdoor_pk/productList.dart';
+import 'package:mazdoor_pk/productList2.dart';
 import 'package:mazdoor_pk/productsPosted.dart';
 import 'package:mazdoor_pk/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -30,7 +30,7 @@ class HomeProductsState extends State<HomeProducts> {
       body: PageView(
         controller: _pageController,
         children: <Widget>[
-          Center(child: ProductList1()),
+          Center(child: ProductList2()),
           Center(child: ProductsPosted()),
           Center(child: Notifications()),
           Center(child: Profile()),
