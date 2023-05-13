@@ -115,19 +115,21 @@ class _ProductListState2 extends State<ProductList2> {
                                                         15)))),
                                     onPressed: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => ProductView(
-                                                  title: title,
-                                                  description: description,
-                                                  basePrice: basePrice,
-                                                  actualPrice: actualPrice,
-                                                  category: category,
-                                                  sellerEmail: sellerEmail,
-                                                  seller: seller,
-                                                  image: image,
-                                                  time: time,
-                                                  id: id)));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProductView(
+                                              title: title,
+                                              description: description,
+                                              basePrice: basePrice,
+                                              actualPrice: actualPrice,
+                                              category: category,
+                                              sellerEmail: sellerEmail,
+                                              seller: seller,
+                                              image: image,
+                                              time: time,
+                                              id: id),
+                                        ),
+                                      );
                                     },
                                     child: const Text('PLACE BID',
                                         style: TextStyle(

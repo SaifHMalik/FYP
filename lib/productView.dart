@@ -38,30 +38,30 @@ class ProductView extends StatefulWidget {
 class ProductViewState extends State<ProductView> {
   TextEditingController amount = TextEditingController();
 
-  Future<void> updateBid(double amount, String _id) async {
+  Future<void> updateBid(double amount, double check, String _id) async {
     pr.print("aaaaaa");
-    // QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-    //     .collection('Product')
-    //     .where('id', isEqualTo: _id)
-    //     .limit(1)
-    //     .get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Product')
+        .where('id', isEqualTo: _id)
+        .limit(1)
+        .get();
 
     pr.print("AAAAA");
 
-    // pr.print("123");
-    // if (check > amount) {
-    //   pr.print(
-    //       "The Amount Entered is less than what has already been Bid please bid a greater amount of at least 100");
-    //   return;
-    // } else if (amount < check + 100) {
-    //   pr.print("Bid amount of at least ${check + 100}");
-    //   return;
-    // }
+    pr.print("BBB");
+    if (check > amount) {
+      pr.print(
+          "The Amount Entered is less than what has already been Bid please bid a greater amount of at least 100");
+      return;
+    } else if (amount < check + 100) {
+      pr.print("Bid amount of at least ${check + 100}");
+      return;
+    }
 
-    // DocumentReference userDocRef = querySnapshot.docs[0].reference;
-    // userDocRef.update({
-    //   'actualPrice': amount,
-    // });
+    DocumentReference userDocRef = querySnapshot.docs[0].reference;
+    userDocRef.update({
+      'actualPrice': amount,
+    });
   }
 
   @override
@@ -239,11 +239,35 @@ class ProductViewState extends State<ProductView> {
                                                           Color.fromARGB(255,
                                                               80, 232, 176)),
                                                   onPressed: ((() {
-                                                    pr.print(amount.text);
                                                     updateBid(
-                                                        double.parse(
-                                                            amount.text),
-                                                        widget.id);
+                                                      double.parse(amount.text),
+                                                      widget.actualPrice,
+                                                      widget.id,
+                                                    );
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => ProductView(
+                                                            title: widget.title,
+                                                            description: widget
+                                                                .description,
+                                                            basePrice: widget
+                                                                .basePrice,
+                                                            actualPrice:
+                                                                double.parse(
+                                                                    amount
+                                                                        .text),
+                                                            category:
+                                                                widget.category,
+                                                            sellerEmail: widget
+                                                                .sellerEmail,
+                                                            seller:
+                                                                widget.seller,
+                                                            image: widget.image,
+                                                            time: widget.time,
+                                                            id: widget.id),
+                                                      ),
+                                                    );
                                                   })),
                                                   child: const Text('PLACE BID',
                                                       style: TextStyle(
