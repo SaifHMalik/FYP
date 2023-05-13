@@ -46,12 +46,20 @@ class _ProductListState2 extends State<ProductList2> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   final title = snapshot.data[index]["title"];
-                  final basePrice = snapshot.data[index]["basePrice"];
+                  final basePrice =
+                      snapshot.data[index]["basePrice"].toDouble();
                   final description = snapshot.data[index]["description"];
-                  final actualPrice = snapshot.data[index]["actualPrice"];
+                  final actualPrice =
+                      snapshot.data[index]["actualPrice"].toDouble();
                   final seller = snapshot.data[index]["user"];
                   final sellerEmail = snapshot.data[index]["userEmail"];
                   final category = snapshot.data[index]["category"];
+                  final id = snapshot.data[index]["id"];
+                  final image = snapshot.data[index]["image"];
+                  Timestamp timestamp =
+                      snapshot.data[index]["time"] as Timestamp;
+                  DateTime dateTime = timestamp.toDate();
+                  final time = dateTime.toString();
 
                   return Card(
                     elevation: 10.0,
@@ -110,14 +118,16 @@ class _ProductListState2 extends State<ProductList2> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => ProductView(
-                                                    title: title,
-                                                    description: description,
-                                                    basePrice: basePrice,
-                                                    actualPrice: actualPrice,
-                                                    category: category,
-                                                    sellerEmail: sellerEmail,
-                                                    seller: seller,
-                                                  )));
+                                                  title: title,
+                                                  description: description,
+                                                  basePrice: basePrice,
+                                                  actualPrice: actualPrice,
+                                                  category: category,
+                                                  sellerEmail: sellerEmail,
+                                                  seller: seller,
+                                                  image: image,
+                                                  time: time,
+                                                  id: id)));
                                     },
                                     child: const Text('PLACE BID',
                                         style: TextStyle(

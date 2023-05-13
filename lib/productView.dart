@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'printing.dart' as pr;
 
 // ignore: camel_case_types
 class ProductView extends StatefulWidget {
@@ -10,6 +12,9 @@ class ProductView extends StatefulWidget {
   final actualPrice;
   final category;
   final seller;
+  final image;
+  final time;
+  final id;
 
   const ProductView({
     Key? key,
@@ -20,6 +25,9 @@ class ProductView extends StatefulWidget {
     required this.actualPrice,
     required this.category,
     required this.seller,
+    required this.image,
+    required this.time,
+    required this.id,
   }) : super(key: key);
 
   @override
@@ -28,24 +36,37 @@ class ProductView extends StatefulWidget {
 
 // ignore: camel_case_types
 class ProductViewState extends State<ProductView> {
-  final firebase = FirebaseFirestore.instance.collection("users");
-  String userName = "";
+  TextEditingController amount = TextEditingController();
 
-  Future<void> getUser() async {
-    final query =
-        await firebase.where("userEmail", isEqualTo: widget.sellerEmail).get();
-    if (query.docs.isNotEmpty) {
-      final user = query.docs.first.data();
-      setState(() {
-        userName = user['userName'];
-      });
-    }
+  Future<void> updateBid(double amount, String _id) async {
+    pr.print("aaaaaa");
+    // QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+    //     .collection('Product')
+    //     .where('id', isEqualTo: _id)
+    //     .limit(1)
+    //     .get();
+
+    pr.print("AAAAA");
+
+    // pr.print("123");
+    // if (check > amount) {
+    //   pr.print(
+    //       "The Amount Entered is less than what has already been Bid please bid a greater amount of at least 100");
+    //   return;
+    // } else if (amount < check + 100) {
+    //   pr.print("Bid amount of at least ${check + 100}");
+    //   return;
+    // }
+
+    // DocumentReference userDocRef = querySnapshot.docs[0].reference;
+    // userDocRef.update({
+    //   'actualPrice': amount,
+    // });
   }
 
   @override
   void initState() {
     super.initState();
-    getUser();
   }
 
   Widget build(BuildContext context) {
@@ -96,7 +117,7 @@ class ProductViewState extends State<ProductView> {
                                             SizedBox(
                                               width: 10,
                                             ),
-                                            Text("${userName}",
+                                            Text(widget.sellerEmail,
                                                 style: TextStyle(
                                                     fontFamily: 'Nunito')),
                                           ],
@@ -107,8 +128,8 @@ class ProductViewState extends State<ProductView> {
                                                 fontFamily: 'Nunito')),
                                         const SizedBox(height: 20),
                                         Row(
-                                          children: const [
-                                            Text(
+                                          children: [
+                                            const Text(
                                               'Ends in: ',
                                               style: TextStyle(
                                                   color: Color.fromRGBO(
@@ -117,8 +138,8 @@ class ProductViewState extends State<ProductView> {
                                                   fontFamily: 'Nunito'),
                                             ),
                                             Text(
-                                              '03hr 14m 12s',
-                                              style: TextStyle(
+                                              widget.time,
+                                              style: const TextStyle(
                                                   color: Color.fromRGBO(
                                                       40, 175, 125, 1),
                                                   fontWeight: FontWeight.w700,
@@ -130,8 +151,8 @@ class ProductViewState extends State<ProductView> {
                                           height: 20,
                                         ),
                                         Row(
-                                          children: const [
-                                            Text(
+                                          children: [
+                                            const Text(
                                               'Current Bid: ',
                                               style: TextStyle(
                                                   color: Colors.grey,
@@ -139,8 +160,8 @@ class ProductViewState extends State<ProductView> {
                                                   fontFamily: 'Nunito'),
                                             ),
                                             Text(
-                                              'PKR 8,500/-',
-                                              style: TextStyle(
+                                              'PKR ${widget.actualPrice.toString()}/-',
+                                              style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 20,
                                                   fontFamily: 'Nunito'),
@@ -151,8 +172,8 @@ class ProductViewState extends State<ProductView> {
                                           height: 20,
                                         ),
                                         Row(
-                                          children: const [
-                                            Text(
+                                          children: [
+                                            const Text(
                                               'Base Price: ',
                                               style: TextStyle(
                                                   color: Colors.black,
@@ -160,8 +181,8 @@ class ProductViewState extends State<ProductView> {
                                                   fontFamily: 'Nunito'),
                                             ),
                                             Text(
-                                              'PKR 6000/-',
-                                              style: TextStyle(
+                                              widget.basePrice.toString(),
+                                              style: const TextStyle(
                                                   color: Colors.black,
                                                   fontFamily: 'Nunito'),
                                             ),
@@ -178,6 +199,7 @@ class ProductViewState extends State<ProductView> {
                                                 padding: const EdgeInsets.only(
                                                     bottom: 10),
                                                 child: TextFormField(
+                                                    controller: amount,
                                                     decoration: const InputDecoration(
                                                         border:
                                                             UnderlineInputBorder(),
@@ -217,24 +239,11 @@ class ProductViewState extends State<ProductView> {
                                                           Color.fromARGB(255,
                                                               80, 232, 176)),
                                                   onPressed: ((() {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                const ProductView(
-                                                                  actualPrice:
-                                                                      null,
-                                                                  basePrice:
-                                                                      null,
-                                                                  category:
-                                                                      null,
-                                                                  description:
-                                                                      null,
-                                                                  seller: null,
-                                                                  sellerEmail:
-                                                                      null,
-                                                                  title: null,
-                                                                )));
+                                                    pr.print(amount.text);
+                                                    updateBid(
+                                                        double.parse(
+                                                            amount.text),
+                                                        widget.id);
                                                   })),
                                                   child: const Text('PLACE BID',
                                                       style: TextStyle(

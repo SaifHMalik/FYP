@@ -170,11 +170,13 @@ class _ProductListState extends State<ProductList> {
                                                                 borderRadius:
                                                                     BorderRadius.circular(15)))),
                                                     onPressed: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  const ProductView()));
+                                                      // Navigator.push(
+                                                      //     context,
+                                                      //     MaterialPageRoute(
+                                                      //         builder: (context) =>
+                                                      //             const ProductView(),
+                                                      //             )
+                                                      //             ,);
                                                     },
                                                     child: const Text(
                                                         'PLACE BID',
