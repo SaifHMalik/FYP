@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mazdoor_pk/homeProducts.dart';
 import 'printing.dart' as pr;
 
 // ignore: camel_case_types
@@ -34,6 +35,26 @@ class ProductView extends StatefulWidget {
   State<ProductView> createState() => ProductViewState();
 }
 
+// Future<void> getName(String _id) async {
+//   pr.print("aaaaaa");
+//   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+//       .collection('Product')
+//       .where('id', isEqualTo: _id)
+//       .limit(1)
+//       .get();
+
+//   String userEmail = querySnapshot.docs.first.get("userEmail");
+
+//   var vari = await FirebaseFirestore.instance
+//       .collection('users')
+//       .where('email', isEqualTo: userEmail)
+//       .get();
+
+//   name = vari.docs.first.data()["name"];
+// }
+
+String name = "AAAAA";
+
 // ignore: camel_case_types
 class ProductViewState extends State<ProductView> {
   TextEditingController amount = TextEditingController();
@@ -46,7 +67,23 @@ class ProductViewState extends State<ProductView> {
         .limit(1)
         .get();
 
-    pr.print("AAAAA");
+    String userEmail = querySnapshot.docs.first.get("userEmail");
+
+    var vari = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: userEmail)
+        .get();
+
+    name = vari.docs.first.data()["name"];
+    pr.print(name);
+
+    // DateTime currentTime = DateTime.now();
+
+    // Timestamp bidTime = vari.docs.first.data()["time"];
+    // DateTime endTime = bidTime.toDate();
+
+    // Duration difference = currentTime.difference(endTime);
+    // Duration tenMin = Duration(minutes: 10);
 
     pr.print("BBB");
     if (check > amount) {
@@ -59,16 +96,52 @@ class ProductViewState extends State<ProductView> {
     }
 
     DocumentReference userDocRef = querySnapshot.docs[0].reference;
+
+    // if (difference < tenMin) {
+    //   Timestamp newTimestamp =
+    //       Timestamp.fromDate(bidTime.toDate().add(Duration(minutes: 10)));
+
+    //   userDocRef.update({
+    //     'actualPrice': amount,
+    //     'time': newTimestamp,
+    //   });
+    // } else {
+    //   userDocRef.update({
+    //     'actualPrice': amount,
+    //   });
+    // }
+
     userDocRef.update({
       'actualPrice': amount,
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> getName(String _id) async {
+    pr.print("aaaaaa");
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Product')
+        .where('id', isEqualTo: _id)
+        .limit(1)
+        .get();
+
+    String userEmail = querySnapshot.docs.first.get("userEmail");
+
+    var vari = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: userEmail)
+        .get();
+
+    name = vari.docs.first.data()["name"];
   }
 
+  Future<Null> getRegresh() async {
+    await Future.delayed(Duration(seconds: 3));
+    setState(() {
+      getName(widget.id);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -76,194 +149,195 @@ class ProductViewState extends State<ProductView> {
         backgroundColor: Colors.white,
         body: Stack(children: [
           SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 300,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('productImage.jpg'),
-                      fit: BoxFit.fitHeight,
+              child: FutureBuilder(
+            future: getName(widget.id),
+            builder: (context, snashot) {
+              return RefreshIndicator(
+                onRefresh: getRegresh,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 300,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('productImage.jpg'),
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                      child: null,
                     ),
-                  ),
-                  child: null,
-                ),
-                SafeArea(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
+                    SafeArea(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
                             child: Card(
-                                margin: const EdgeInsets.all(11),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(18),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                              margin: const EdgeInsets.all(11),
+                              child: Padding(
+                                padding: const EdgeInsets.all(18),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(widget.title,
+                                        style: TextStyle(
+                                            fontSize: 23,
+                                            fontFamily: 'Nunito',
+                                            fontWeight: FontWeight.w600)),
+                                    const SizedBox(height: 15),
+                                    Row(
                                       children: [
-                                        Text(widget.title,
-                                            style: TextStyle(
-                                                fontSize: 23,
-                                                fontFamily: 'Nunito',
-                                                fontWeight: FontWeight.w600)),
-                                        const SizedBox(height: 15),
-                                        Row(
-                                          children: [
-                                            CircleAvatar(
-                                              backgroundImage:
-                                                  AssetImage('profile.jpg'),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(widget.sellerEmail,
-                                                style: TextStyle(
-                                                    fontFamily: 'Nunito')),
-                                          ],
+                                        CircleAvatar(
+                                          backgroundImage:
+                                              AssetImage('profile.jpg'),
                                         ),
-                                        const SizedBox(height: 10),
-                                        Text(widget.description,
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(name,
                                             style: TextStyle(
                                                 fontFamily: 'Nunito')),
-                                        const SizedBox(height: 20),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Ends in: ',
-                                              style: TextStyle(
-                                                  color: Color.fromRGBO(
-                                                      40, 175, 125, 1),
-                                                  fontWeight: FontWeight.w900,
-                                                  fontFamily: 'Nunito'),
-                                            ),
-                                            Text(
-                                              widget.time,
-                                              style: const TextStyle(
-                                                  color: Color.fromRGBO(
-                                                      40, 175, 125, 1),
-                                                  fontWeight: FontWeight.w700,
-                                                  fontFamily: 'Nunito'),
-                                            ),
-                                          ],
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(widget.description,
+                                        style: TextStyle(fontFamily: 'Nunito')),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Ends in: ',
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(
+                                                  40, 175, 125, 1),
+                                              fontWeight: FontWeight.w900,
+                                              fontFamily: 'Nunito'),
+                                        ),
+                                        Text(
+                                          widget.time,
+                                          style: const TextStyle(
+                                              color: Color.fromRGBO(
+                                                  40, 175, 125, 1),
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: 'Nunito'),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Current Bid: ',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Nunito'),
+                                        ),
+                                        Text(
+                                          'PKR ${widget.actualPrice.toString()}/-',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                              fontFamily: 'Nunito'),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Base Price: ',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Nunito'),
+                                        ),
+                                        Text(
+                                          widget.basePrice.toString(),
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontFamily: 'Nunito'),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 130,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 10),
+                                            child: TextFormField(
+                                                controller: amount,
+                                                decoration: const InputDecoration(
+                                                    border:
+                                                        UnderlineInputBorder(),
+                                                    labelText: 'Bid Amount',
+                                                    labelStyle: TextStyle(
+                                                        fontFamily: 'Nunito'))),
+                                          ),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          width: 25,
                                         ),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Current Bid: ',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Nunito'),
-                                            ),
-                                            Text(
-                                              'PKR ${widget.actualPrice.toString()}/-',
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20,
-                                                  fontFamily: 'Nunito'),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Text(
-                                              'Base Price: ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Nunito'),
-                                            ),
-                                            Text(
-                                              widget.basePrice.toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: 'Nunito'),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 130,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 10),
-                                                child: TextFormField(
-                                                    controller: amount,
-                                                    decoration: const InputDecoration(
-                                                        border:
-                                                            UnderlineInputBorder(),
-                                                        labelText: 'Bid Amount',
-                                                        labelStyle: TextStyle(
-                                                            fontFamily:
-                                                                'Nunito'))),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 25,
-                                            ),
-                                            const Text('Total Bids: ',
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontFamily: 'Nunito')),
-                                            const Text('10',
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontFamily: 'Nunito'))
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 25,
-                                        ),
-                                        Center(
-                                          child: Container(
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              height: 52,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: TextButton(
-                                                  style: TextButton.styleFrom(
-                                                      backgroundColor:
-                                                          Color.fromARGB(255,
-                                                              80, 232, 176)),
-                                                  onPressed: ((() {
-                                                    if (double.parse(
-                                                            amount.text) >
-                                                        widget.actualPrice) {
-                                                      updateBid(
-                                                        double.parse(
-                                                            amount.text),
-                                                        widget.actualPrice,
-                                                        widget.id,
-                                                      );
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => ProductView(
+                                        const Text('Total Bids: ',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontFamily: 'Nunito')),
+                                        const Text('10',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontFamily: 'Nunito'))
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 25,
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 52,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            child: TextButton(
+                                              style: TextButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 80, 232, 176)),
+                                              onPressed: ((() {
+                                                if (double.parse(amount.text) >
+                                                    widget.actualPrice) {
+                                                  updateBid(
+                                                    double.parse(amount.text),
+                                                    widget.actualPrice,
+                                                    widget.id,
+                                                  );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ProductView(
                                                               title: widget
                                                                   .title,
                                                               description: widget
                                                                   .description,
                                                               basePrice: widget
                                                                   .basePrice,
-                                                              actualPrice:
-                                                                  double.parse(
-                                                                      amount
-                                                                          .text),
-                                                              category: widget
-                                                                  .category,
+                                                              actualPrice: double
+                                                                  .parse(amount
+                                                                      .text),
+                                                              category:
+                                                                  widget
+                                                                      .category,
                                                               sellerEmail: widget
                                                                   .sellerEmail,
                                                               seller:
@@ -272,62 +346,561 @@ class ProductViewState extends State<ProductView> {
                                                                   widget.image,
                                                               time: widget.time,
                                                               id: widget.id),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      pr.print(
-                                                          "Enter Valid Price");
-                                                    }
-
-                                                    // updateBid(
-                                                    //   double.parse(amount.text),
-                                                    //   widget.actualPrice,
-                                                    //   widget.id,
-                                                    // );
-                                                    // Navigator.push(
-                                                    //   context,
-                                                    //   MaterialPageRoute(
-                                                    //     builder: (context) => ProductView(
-                                                    //         title: widget.title,
-                                                    //         description: widget
-                                                    //             .description,
-                                                    //         basePrice: widget
-                                                    //             .basePrice,
-                                                    //         actualPrice:
-                                                    //             double.parse(
-                                                    //                 amount
-                                                    //                     .text),
-                                                    //         category:
-                                                    //             widget.category,
-                                                    //         sellerEmail: widget
-                                                    //             .sellerEmail,
-                                                    //         seller:
-                                                    //             widget.seller,
-                                                    //         image: widget.image,
-                                                    //         time: widget.time,
-                                                    //         id: widget.id),
-                                                    //   ),
-                                                    // );
-                                                  })),
-                                                  child: const Text('PLACE BID',
-                                                      style: TextStyle(
-                                                          fontFamily: 'Nunito',
-                                                          color: Colors.black87,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w700)),
-                                                ),
-                                              ),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  pr.print("Enter Valid Price");
+                                                }
+                                              })),
+                                              child: const Text('PLACE BID',
+                                                  style: TextStyle(
+                                                      fontFamily: 'Nunito',
+                                                      color: Colors.black87,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w700)),
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    )))),
-                      ]),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 52,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            child: TextButton(
+                                              style: TextButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 232, 80, 80)),
+                                              onPressed: ((() {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomeProducts(),
+                                                  ),
+                                                );
+                                              })),
+                                              child: const Text('BACK',
+                                                  style: TextStyle(
+                                                      fontFamily: 'Nunito',
+                                                      color: Colors.black87,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w700)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              );
+            },
+          )
+              //     RefreshIndicator(
+              //   onRefresh: getRegresh,
+              //   child: Column(
+              //     children: [
+              //       Container(
+              //         width: double.infinity,
+              //         height: 300,
+              //         decoration: const BoxDecoration(
+              //           image: DecorationImage(
+              //             image: AssetImage('productImage.jpg'),
+              //             fit: BoxFit.fitHeight,
+              //           ),
+              //         ),
+              //         child: null,
+              //       ),
+              //       SafeArea(
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Center(
+              //               child: Card(
+              //                 margin: const EdgeInsets.all(11),
+              //                 child: Padding(
+              //                   padding: const EdgeInsets.all(18),
+              //                   child: Column(
+              //                     crossAxisAlignment: CrossAxisAlignment.start,
+              //                     children: [
+              //                       Text(widget.title,
+              //                           style: TextStyle(
+              //                               fontSize: 23,
+              //                               fontFamily: 'Nunito',
+              //                               fontWeight: FontWeight.w600)),
+              //                       const SizedBox(height: 15),
+              //                       Row(
+              //                         children: [
+              //                           CircleAvatar(
+              //                             backgroundImage:
+              //                                 AssetImage('profile.jpg'),
+              //                           ),
+              //                           SizedBox(
+              //                             width: 10,
+              //                           ),
+              //                           Text(name,
+              //                               style: TextStyle(fontFamily: 'Nunito')),
+              //                         ],
+              //                       ),
+              //                       const SizedBox(height: 10),
+              //                       Text(widget.description,
+              //                           style: TextStyle(fontFamily: 'Nunito')),
+              //                       const SizedBox(height: 20),
+              //                       Row(
+              //                         children: [
+              //                           const Text(
+              //                             'Ends in: ',
+              //                             style: TextStyle(
+              //                                 color:
+              //                                     Color.fromRGBO(40, 175, 125, 1),
+              //                                 fontWeight: FontWeight.w900,
+              //                                 fontFamily: 'Nunito'),
+              //                           ),
+              //                           Text(
+              //                             widget.time,
+              //                             style: const TextStyle(
+              //                                 color:
+              //                                     Color.fromRGBO(40, 175, 125, 1),
+              //                                 fontWeight: FontWeight.w700,
+              //                                 fontFamily: 'Nunito'),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                       const SizedBox(
+              //                         height: 20,
+              //                       ),
+              //                       Row(
+              //                         children: [
+              //                           const Text(
+              //                             'Current Bid: ',
+              //                             style: TextStyle(
+              //                                 color: Colors.grey,
+              //                                 fontWeight: FontWeight.bold,
+              //                                 fontFamily: 'Nunito'),
+              //                           ),
+              //                           Text(
+              //                             'PKR ${widget.actualPrice.toString()}/-',
+              //                             style: const TextStyle(
+              //                                 color: Colors.black,
+              //                                 fontSize: 20,
+              //                                 fontFamily: 'Nunito'),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                       const SizedBox(
+              //                         height: 20,
+              //                       ),
+              //                       Row(
+              //                         children: [
+              //                           const Text(
+              //                             'Base Price: ',
+              //                             style: TextStyle(
+              //                                 color: Colors.black,
+              //                                 fontWeight: FontWeight.bold,
+              //                                 fontFamily: 'Nunito'),
+              //                           ),
+              //                           Text(
+              //                             widget.basePrice.toString(),
+              //                             style: const TextStyle(
+              //                                 color: Colors.black,
+              //                                 fontFamily: 'Nunito'),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                       const SizedBox(
+              //                         height: 20,
+              //                       ),
+              //                       Row(
+              //                         children: [
+              //                           SizedBox(
+              //                             width: 130,
+              //                             child: Padding(
+              //                               padding:
+              //                                   const EdgeInsets.only(bottom: 10),
+              //                               child: TextFormField(
+              //                                   controller: amount,
+              //                                   decoration: const InputDecoration(
+              //                                       border: UnderlineInputBorder(),
+              //                                       labelText: 'Bid Amount',
+              //                                       labelStyle: TextStyle(
+              //                                           fontFamily: 'Nunito'))),
+              //                             ),
+              //                           ),
+              //                           const SizedBox(
+              //                             width: 25,
+              //                           ),
+              //                           const Text('Total Bids: ',
+              //                               style: TextStyle(
+              //                                   color: Colors.black87,
+              //                                   fontFamily: 'Nunito')),
+              //                           const Text('10',
+              //                               style: TextStyle(
+              //                                   color: Colors.black87,
+              //                                   fontFamily: 'Nunito'))
+              //                         ],
+              //                       ),
+              //                       const SizedBox(
+              //                         height: 25,
+              //                       ),
+              //                       Center(
+              //                         child: Container(
+              //                           child: SizedBox(
+              //                             width: double.infinity,
+              //                             height: 52,
+              //                             child: ClipRRect(
+              //                               borderRadius: BorderRadius.circular(15),
+              //                               child: TextButton(
+              //                                 style: TextButton.styleFrom(
+              //                                     backgroundColor: Color.fromARGB(
+              //                                         255, 80, 232, 176)),
+              //                                 onPressed: ((() {
+              //                                   if (double.parse(amount.text) >
+              //                                       widget.actualPrice) {
+              //                                     updateBid(
+              //                                       double.parse(amount.text),
+              //                                       widget.actualPrice,
+              //                                       widget.id,
+              //                                     );
+              //                                     Navigator.push(
+              //                                       context,
+              //                                       MaterialPageRoute(
+              //                                         builder: (context) =>
+              //                                             ProductView(
+              //                                                 title: widget.title,
+              //                                                 description: widget
+              //                                                     .description,
+              //                                                 basePrice:
+              //                                                     widget.basePrice,
+              //                                                 actualPrice:
+              //                                                     double.parse(
+              //                                                         amount.text),
+              //                                                 category:
+              //                                                     widget.category,
+              //                                                 sellerEmail: widget
+              //                                                     .sellerEmail,
+              //                                                 seller: widget.seller,
+              //                                                 image: widget.image,
+              //                                                 time: widget.time,
+              //                                                 id: widget.id),
+              //                                       ),
+              //                                     );
+              //                                   } else {
+              //                                     pr.print("Enter Valid Price");
+              //                                   }
+              //                                 })),
+              //                                 child: const Text('PLACE BID',
+              //                                     style: TextStyle(
+              //                                         fontFamily: 'Nunito',
+              //                                         color: Colors.black87,
+              //                                         fontSize: 18,
+              //                                         fontWeight: FontWeight.w700)),
+              //                               ),
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Center(
+              //                         child: Container(
+              //                           child: SizedBox(
+              //                             width: double.infinity,
+              //                             height: 52,
+              //                             child: ClipRRect(
+              //                               borderRadius: BorderRadius.circular(15),
+              //                               child: TextButton(
+              //                                 style: TextButton.styleFrom(
+              //                                     backgroundColor: Color.fromARGB(
+              //                                         255, 232, 80, 80)),
+              //                                 onPressed: ((() {
+              //                                   Navigator.push(
+              //                                     context,
+              //                                     MaterialPageRoute(
+              //                                       builder: (context) =>
+              //                                           HomeProducts(),
+              //                                     ),
+              //                                   );
+              //                                 })),
+              //                                 child: const Text('BACK',
+              //                                     style: TextStyle(
+              //                                         fontFamily: 'Nunito',
+              //                                         color: Colors.black87,
+              //                                         fontSize: 18,
+              //                                         fontWeight: FontWeight.w700)),
+              //                               ),
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // )
+              ///////////////////////////////////////////////////////////////////////////////////////////
+              // Column(
+              //   children: [
+              //     Container(
+              //       width: double.infinity,
+              //       height: 300,
+              //       decoration: const BoxDecoration(
+              //         image: DecorationImage(
+              //           image: AssetImage('productImage.jpg'),
+              //           fit: BoxFit.fitHeight,
+              //         ),
+              //       ),
+              //       child: null,
+              //     ),
+              //     SafeArea(
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Center(
+              //             child: Card(
+              //               margin: const EdgeInsets.all(11),
+              //               child: Padding(
+              //                 padding: const EdgeInsets.all(18),
+              //                 child: Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Text(widget.title,
+              //                         style: TextStyle(
+              //                             fontSize: 23,
+              //                             fontFamily: 'Nunito',
+              //                             fontWeight: FontWeight.w600)),
+              //                     const SizedBox(height: 15),
+              //                     Row(
+              //                       children: [
+              //                         CircleAvatar(
+              //                           backgroundImage:
+              //                               AssetImage('profile.jpg'),
+              //                         ),
+              //                         SizedBox(
+              //                           width: 10,
+              //                         ),
+              //                         Text(name,
+              //                             style: TextStyle(fontFamily: 'Nunito')),
+              //                       ],
+              //                     ),
+              //                     const SizedBox(height: 10),
+              //                     Text(widget.description,
+              //                         style: TextStyle(fontFamily: 'Nunito')),
+              //                     const SizedBox(height: 20),
+              //                     Row(
+              //                       children: [
+              //                         const Text(
+              //                           'Ends in: ',
+              //                           style: TextStyle(
+              //                               color:
+              //                                   Color.fromRGBO(40, 175, 125, 1),
+              //                               fontWeight: FontWeight.w900,
+              //                               fontFamily: 'Nunito'),
+              //                         ),
+              //                         Text(
+              //                           widget.time,
+              //                           style: const TextStyle(
+              //                               color:
+              //                                   Color.fromRGBO(40, 175, 125, 1),
+              //                               fontWeight: FontWeight.w700,
+              //                               fontFamily: 'Nunito'),
+              //                         ),
+              //                       ],
+              //                     ),
+              //                     const SizedBox(
+              //                       height: 20,
+              //                     ),
+              //                     Row(
+              //                       children: [
+              //                         const Text(
+              //                           'Current Bid: ',
+              //                           style: TextStyle(
+              //                               color: Colors.grey,
+              //                               fontWeight: FontWeight.bold,
+              //                               fontFamily: 'Nunito'),
+              //                         ),
+              //                         Text(
+              //                           'PKR ${widget.actualPrice.toString()}/-',
+              //                           style: const TextStyle(
+              //                               color: Colors.black,
+              //                               fontSize: 20,
+              //                               fontFamily: 'Nunito'),
+              //                         ),
+              //                       ],
+              //                     ),
+              //                     const SizedBox(
+              //                       height: 20,
+              //                     ),
+              //                     Row(
+              //                       children: [
+              //                         const Text(
+              //                           'Base Price: ',
+              //                           style: TextStyle(
+              //                               color: Colors.black,
+              //                               fontWeight: FontWeight.bold,
+              //                               fontFamily: 'Nunito'),
+              //                         ),
+              //                         Text(
+              //                           widget.basePrice.toString(),
+              //                           style: const TextStyle(
+              //                               color: Colors.black,
+              //                               fontFamily: 'Nunito'),
+              //                         ),
+              //                       ],
+              //                     ),
+              //                     const SizedBox(
+              //                       height: 20,
+              //                     ),
+              //                     Row(
+              //                       children: [
+              //                         SizedBox(
+              //                           width: 130,
+              //                           child: Padding(
+              //                             padding:
+              //                                 const EdgeInsets.only(bottom: 10),
+              //                             child: TextFormField(
+              //                                 controller: amount,
+              //                                 decoration: const InputDecoration(
+              //                                     border: UnderlineInputBorder(),
+              //                                     labelText: 'Bid Amount',
+              //                                     labelStyle: TextStyle(
+              //                                         fontFamily: 'Nunito'))),
+              //                           ),
+              //                         ),
+              //                         const SizedBox(
+              //                           width: 25,
+              //                         ),
+              //                         const Text('Total Bids: ',
+              //                             style: TextStyle(
+              //                                 color: Colors.black87,
+              //                                 fontFamily: 'Nunito')),
+              //                         const Text('10',
+              //                             style: TextStyle(
+              //                                 color: Colors.black87,
+              //                                 fontFamily: 'Nunito'))
+              //                       ],
+              //                     ),
+              //                     const SizedBox(
+              //                       height: 25,
+              //                     ),
+              //                     Center(
+              //                       child: Container(
+              //                         child: SizedBox(
+              //                           width: double.infinity,
+              //                           height: 52,
+              //                           child: ClipRRect(
+              //                             borderRadius: BorderRadius.circular(15),
+              //                             child: TextButton(
+              //                               style: TextButton.styleFrom(
+              //                                   backgroundColor: Color.fromARGB(
+              //                                       255, 80, 232, 176)),
+              //                               onPressed: ((() {
+              //                                 if (double.parse(amount.text) >
+              //                                     widget.actualPrice) {
+              //                                   updateBid(
+              //                                     double.parse(amount.text),
+              //                                     widget.actualPrice,
+              //                                     widget.id,
+              //                                   );
+              //                                   Navigator.push(
+              //                                     context,
+              //                                     MaterialPageRoute(
+              //                                       builder: (context) =>
+              //                                           ProductView(
+              //                                               title: widget.title,
+              //                                               description: widget
+              //                                                   .description,
+              //                                               basePrice:
+              //                                                   widget.basePrice,
+              //                                               actualPrice:
+              //                                                   double.parse(
+              //                                                       amount.text),
+              //                                               category:
+              //                                                   widget.category,
+              //                                               sellerEmail: widget
+              //                                                   .sellerEmail,
+              //                                               seller: widget.seller,
+              //                                               image: widget.image,
+              //                                               time: widget.time,
+              //                                               id: widget.id),
+              //                                     ),
+              //                                   );
+              //                                 } else {
+              //                                   pr.print("Enter Valid Price");
+              //                                 }
+
+              //                               })),
+              //                               child: const Text('PLACE BID',
+              //                                   style: TextStyle(
+              //                                       fontFamily: 'Nunito',
+              //                                       color: Colors.black87,
+              //                                       fontSize: 18,
+              //                                       fontWeight: FontWeight.w700)),
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ),
+              //                     Center(
+              //                       child: Container(
+              //                         child: SizedBox(
+              //                           width: double.infinity,
+              //                           height: 52,
+              //                           child: ClipRRect(
+              //                             borderRadius: BorderRadius.circular(15),
+              //                             child: TextButton(
+              //                               style: TextButton.styleFrom(
+              //                                   backgroundColor: Color.fromARGB(
+              //                                       255, 232, 80, 80)),
+              //                               onPressed: ((() {
+              //                                 Navigator.push(
+              //                                   context,
+              //                                   MaterialPageRoute(
+              //                                     builder: (context) =>
+              //                                         HomeProducts(),
+              //                                   ),
+              //                                 );
+              //                               })),
+              //                               child: const Text('BACK',
+              //                                   style: TextStyle(
+              //                                       fontFamily: 'Nunito',
+              //                                       color: Colors.black87,
+              //                                       fontSize: 18,
+              //                                       fontWeight: FontWeight.w700)),
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              ),
           Positioned(
             top: 20,
             left: 20,
