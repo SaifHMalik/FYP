@@ -239,35 +239,75 @@ class ProductViewState extends State<ProductView> {
                                                           Color.fromARGB(255,
                                                               80, 232, 176)),
                                                   onPressed: ((() {
-                                                    updateBid(
-                                                      double.parse(amount.text),
-                                                      widget.actualPrice,
-                                                      widget.id,
-                                                    );
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => ProductView(
-                                                            title: widget.title,
-                                                            description: widget
-                                                                .description,
-                                                            basePrice: widget
-                                                                .basePrice,
-                                                            actualPrice:
-                                                                double.parse(
-                                                                    amount
-                                                                        .text),
-                                                            category:
-                                                                widget.category,
-                                                            sellerEmail: widget
-                                                                .sellerEmail,
-                                                            seller:
-                                                                widget.seller,
-                                                            image: widget.image,
-                                                            time: widget.time,
-                                                            id: widget.id),
-                                                      ),
-                                                    );
+                                                    if (double.parse(
+                                                            amount.text) >
+                                                        widget.actualPrice) {
+                                                      updateBid(
+                                                        double.parse(
+                                                            amount.text),
+                                                        widget.actualPrice,
+                                                        widget.id,
+                                                      );
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => ProductView(
+                                                              title: widget
+                                                                  .title,
+                                                              description: widget
+                                                                  .description,
+                                                              basePrice: widget
+                                                                  .basePrice,
+                                                              actualPrice:
+                                                                  double.parse(
+                                                                      amount
+                                                                          .text),
+                                                              category: widget
+                                                                  .category,
+                                                              sellerEmail: widget
+                                                                  .sellerEmail,
+                                                              seller:
+                                                                  widget.seller,
+                                                              image:
+                                                                  widget.image,
+                                                              time: widget.time,
+                                                              id: widget.id),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      pr.print(
+                                                          "Enter Valid Price");
+                                                    }
+
+                                                    // updateBid(
+                                                    //   double.parse(amount.text),
+                                                    //   widget.actualPrice,
+                                                    //   widget.id,
+                                                    // );
+                                                    // Navigator.push(
+                                                    //   context,
+                                                    //   MaterialPageRoute(
+                                                    //     builder: (context) => ProductView(
+                                                    //         title: widget.title,
+                                                    //         description: widget
+                                                    //             .description,
+                                                    //         basePrice: widget
+                                                    //             .basePrice,
+                                                    //         actualPrice:
+                                                    //             double.parse(
+                                                    //                 amount
+                                                    //                     .text),
+                                                    //         category:
+                                                    //             widget.category,
+                                                    //         sellerEmail: widget
+                                                    //             .sellerEmail,
+                                                    //         seller:
+                                                    //             widget.seller,
+                                                    //         image: widget.image,
+                                                    //         time: widget.time,
+                                                    //         id: widget.id),
+                                                    //   ),
+                                                    // );
                                                   })),
                                                   child: const Text('PLACE BID',
                                                       style: TextStyle(
