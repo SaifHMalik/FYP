@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/chat.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-// ignore: camel_case_types
 class ServiceViewSeller extends StatefulWidget {
-  ServiceViewSeller({Key? key}) : super(key: key);
+  final String id;
+  const ServiceViewSeller({Key? key, required this.id}) : super(key: key);
 
   @override
   State<ServiceViewSeller> createState() => ServiceViewSellerState();
@@ -11,15 +13,27 @@ class ServiceViewSeller extends StatefulWidget {
 
 // ignore: camel_case_types
 class ServiceViewSellerState extends State<ServiceViewSeller> {
-  final offers = [
-    {
-      'title': "Offer1",
-      'owner': "Vinesh Juriasinghani",
-      'text':
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      'amount': 13000,
-    }
-  ];
+  Future<void> accept() async {}
+
+  Future<void> reject() async {}
+
+  Future getData(String _id) async {
+    var firestore = FirebaseFirestore.instance;
+    QuerySnapshot snap = await firestore
+        .collection("Product")
+        .doc(_id)
+        .collection("ServiceOrders")
+        .get();
+    return snap.docs;
+  }
+
+  Future<Null> getRegresh(String _id) async {
+    await Future.delayed(Duration(seconds: 3));
+    setState(() {
+      getData(_id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +42,9 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
         backgroundColor: Colors.white,
         body: Stack(children: [
           SingleChildScrollView(
-            child: Column(
+            child: // FutureBuilder(future: ,)
+
+                Column(
               children: [
                 Container(
                   width: double.infinity,
@@ -199,7 +215,9 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              ServiceViewSeller()));
+                                                              ServiceViewSeller(
+                                                                id: widget.id,
+                                                              )));
                                                 })),
                                                 child: const Text('END OFFER',
                                                     style: TextStyle(

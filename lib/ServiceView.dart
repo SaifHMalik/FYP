@@ -1,15 +1,118 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'homeServices.dart';
+import 'serviceList.dart';
+import 'printing.dart' as pr;
 
 // ignore: camel_case_types
 class ServiceView extends StatefulWidget {
-  const ServiceView({Key? key}) : super(key: key);
+  final String title;
+  final String email;
+  final String time;
+  final String category;
+  final double price;
+  final String id;
+
+  ServiceView(
+      {Key? key,
+      required this.title,
+      required this.time,
+      required this.email,
+      required this.price,
+      required this.category,
+      required this.id})
+      : super(key: key);
 
   @override
   State<ServiceView> createState() => ServiceViewState();
 }
 
+String name = "AAAA";
+
 // ignore: camel_case_types
 class ServiceViewState extends State<ServiceView> {
+  TextEditingController amount = TextEditingController();
+
+  Future<void> updateBid(double amount, String _id) async {
+    pr.print("aaaaaa");
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Service')
+        .where('id', isEqualTo: _id)
+        .limit(1)
+        .get();
+
+    String userEmail = querySnapshot.docs.first.get("userEmail");
+
+    var vari = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: userEmail)
+        .get();
+
+    name = vari.docs.first.data()["name"];
+    pr.print(name);
+
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    // final parentDocRef =
+    //     FirebaseFirestore.instance.collection('Service').doc(widget.id);
+
+    // final subcollectionRef = parentDocRef.collection('ServiceOrders');
+
+    // final newDocRef = subcollectionRef.doc();
+    // final newDocId = newDocRef.id;
+
+    final subcollectionRef = FirebaseFirestore.instance
+        .collection('Service')
+        .doc(_id)
+        .collection('ServiceOrders');
+
+    // Map<String, dynamic> serviceData = {
+    //   'title': widget.title,
+    //   'userEmail': currentUser?.email,
+    //   'price': amount,
+    //   'id': subcollectionRef.,
+    //   'status': "Not Accepted",
+    // };
+
+    final DocumentReference documentRef = await subcollectionRef.add({
+      'title': widget.title,
+      'userEmail': currentUser?.email,
+      'price': amount,
+      'id': widget.id,
+      'status': "Not Accepted",
+    });
+
+    final String documentId = documentRef.id;
+
+    await documentRef.update({'id': documentId});
+  }
+
+  Future<void> getName(String _id) async {
+    pr.print("aaaaaa");
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Product')
+        .where('id', isEqualTo: _id)
+        .limit(1)
+        .get();
+
+    String userEmail = querySnapshot.docs.first.get("userEmail");
+
+    var vari = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: userEmail)
+        .get();
+
+    name = vari.docs.first.data()["name"];
+  }
+
+  Future<Null> getRegresh() async {
+    await Future.delayed(Duration(seconds: 3));
+    setState(() {
+      getName(widget.id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,9 +148,8 @@ class ServiceViewState extends State<ServiceView> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                          'I need an Electrician to replace 5 sockets at my Home.',
-                                          style: TextStyle(
+                                      Text(widget.title,
+                                          style: const TextStyle(
                                               fontSize: 23,
                                               fontFamily: 'Nunito',
                                               fontWeight: FontWeight.w600)),
@@ -73,9 +175,9 @@ class ServiceViewState extends State<ServiceView> {
                                               TextStyle(fontFamily: 'Nunito')),
                                       const SizedBox(height: 20),
                                       Row(
-                                        children: const [
-                                          Text(
-                                            'Ends in: ',
+                                        children: [
+                                          const Text(
+                                            "End Time:",
                                             style: TextStyle(
                                                 color: Color.fromRGBO(
                                                     40, 175, 125, 1),
@@ -84,8 +186,8 @@ class ServiceViewState extends State<ServiceView> {
                                                 fontFamily: 'Nunito'),
                                           ),
                                           Text(
-                                            '03hr 14m 12s',
-                                            style: TextStyle(
+                                            widget.time,
+                                            style: const TextStyle(
                                                 color: Color.fromRGBO(
                                                     40, 175, 125, 1),
                                                 fontWeight: FontWeight.w700,
@@ -98,8 +200,8 @@ class ServiceViewState extends State<ServiceView> {
                                         height: 20,
                                       ),
                                       Row(
-                                        children: const [
-                                          Text(
+                                        children: [
+                                          const Text(
                                             'Current Bid: ',
                                             style: TextStyle(
                                                 color: Colors.grey,
@@ -107,8 +209,8 @@ class ServiceViewState extends State<ServiceView> {
                                                 fontFamily: 'Nunito'),
                                           ),
                                           Text(
-                                            'PKR 8,500/-',
-                                            style: TextStyle(
+                                            'PKR ${widget.price.toString()}/-',
+                                            style: const TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 20,
                                                 fontFamily: 'Nunito'),
@@ -146,6 +248,7 @@ class ServiceViewState extends State<ServiceView> {
                                               padding: const EdgeInsets.only(
                                                   bottom: 10),
                                               child: TextFormField(
+                                                  controller: amount,
                                                   decoration: const InputDecoration(
                                                       border:
                                                           UnderlineInputBorder(),
@@ -185,11 +288,30 @@ class ServiceViewState extends State<ServiceView> {
                                                         const Color.fromARGB(
                                                             255, 80, 232, 176)),
                                                 onPressed: ((() {
-                                                  Navigator.push(
+                                                  if (double.parse(
+                                                          amount.text) >
+                                                      widget.price) {
+                                                    updateBid(
+                                                        double.parse(
+                                                            amount.text),
+                                                        widget.id);
+
+                                                    Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const ServiceView()));
+                                                        builder: (context) =>
+                                                            ServiceView(
+                                                          title: widget.title,
+                                                          category:
+                                                              widget.category,
+                                                          time: widget.time,
+                                                          email: widget.email,
+                                                          price: widget.price,
+                                                          id: widget.id,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
                                                 })),
                                                 child: const Text('PLACE BID',
                                                     style: TextStyle(
