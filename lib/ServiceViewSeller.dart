@@ -3,6 +3,7 @@ import 'package:mazdoor_pk/chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'printing.dart' as pr;
+import 'counterBid.dart';
 
 class ServiceViewSeller extends StatefulWidget {
   final id;
@@ -29,9 +30,25 @@ class ServiceViewSeller extends StatefulWidget {
 String name = "AAAA";
 
 class ServiceViewSellerState extends State<ServiceViewSeller> {
-  Future<void> accept() async {}
+  Future<void> accept(String _id) async {
+    CollectionReference subCollectionRef = FirebaseFirestore.instance
+        .collection('Service')
+        .doc(widget.id)
+        .collection('ServiceOrders');
+    DocumentReference subDocRef = subCollectionRef.doc(_id);
 
-  Future<void> reject() async {}
+    subDocRef.update({"status": "Accepted"});
+  }
+
+  Future<void> reject(String _id) async {
+    CollectionReference subCollectionRef = FirebaseFirestore.instance
+        .collection('Service')
+        .doc(widget.id)
+        .collection('ServiceOrders');
+    DocumentReference subDocRef = subCollectionRef.doc(_id);
+
+    subDocRef.update({"status": "Rejected"});
+  }
 
   Future getData(String _id) async {
     var firestore = FirebaseFirestore.instance;
@@ -68,6 +85,10 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
       getName(widget.id);
     });
   }
+
+  Future<void> counterOffer() async {}
+
+  Future<void> endOffer() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +306,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                 .doc(widget.id)
                                 .collection("ServiceOrders")
                                 .snapshots(),
-                            builder: ((context, index) {
+                            builder: ((context, snapshot) {
                               if (snapshot.hasError) {
                                 return const Text("Connection Error");
                               }
@@ -295,8 +316,10 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                 return const Text("Loading...");
                               }
 
+                              var docs = snapshot.data?.docs;
+
                               return ListView.builder(
-                                itemCount: 3,
+                                itemCount: docs?.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   return Column(
@@ -313,7 +336,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                               children: [
                                                 const SizedBox(height: 15),
                                                 Row(
-                                                  children: const [
+                                                  children: [
                                                     CircleAvatar(
                                                       backgroundImage:
                                                           AssetImage(
@@ -323,7 +346,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                       width: 10,
                                                     ),
                                                     Text(
-                                                      "James Wood",
+                                                      docs![index]["name"],
                                                       style: TextStyle(
                                                           fontFamily: 'Nunito',
                                                           fontSize: 18),
@@ -341,7 +364,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                   height: 20,
                                                 ),
                                                 Row(
-                                                  children: const [
+                                                  children: [
                                                     Text(
                                                       'Offered: ',
                                                       style: TextStyle(
@@ -352,7 +375,9 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                           fontSize: 15),
                                                     ),
                                                     Text(
-                                                      "PKR " + "13,000" + "/-",
+                                                      "PKR " +
+                                                          "${docs[index]["price"]}" +
+                                                          "/-",
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 20,
@@ -413,9 +438,26 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                         child:
                                                             FloatingActionButton(
                                                           elevation: 0.0,
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        counterBid(
+                                                                  currentBidAmount:
+                                                                      widget
+                                                                          .price,
+                                                                  id: widget.id,
+                                                                  parentId: docs[
+                                                                          index]
+                                                                      ["id"],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
                                                           child: const Text(
-                                                            'Counter Offer',
+                                                            'Counter BID',
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .black87,
@@ -457,7 +499,10 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                         child:
                                                             FloatingActionButton(
                                                           elevation: 0.0,
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                            reject(docs[index]
+                                                                ["id"]);
+                                                          },
                                                           child: const Text(
                                                               'Reject',
                                                               style: TextStyle(
@@ -494,7 +539,10 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                         child:
                                                             FloatingActionButton(
                                                           elevation: 0.0,
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                            accept(docs[index]
+                                                                ["id"]);
+                                                          },
                                                           child: const Text(
                                                               'Accept',
                                                               style: TextStyle(

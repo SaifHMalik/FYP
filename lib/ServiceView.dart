@@ -75,12 +75,20 @@ class ServiceViewState extends State<ServiceView> {
     //   'status': "Not Accepted",
     // };
 
+    var nameOfBidder = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: currentUser?.email)
+        .get();
+
+    String currentName = nameOfBidder.docs.first.data()["name"];
+
     final DocumentReference documentRef = await subcollectionRef.add({
       'title': widget.title,
       'userEmail': currentUser?.email,
       'price': amount,
       'id': widget.id,
       'status': "Not Accepted",
+      'name': currentName,
     });
 
     final String documentId = documentRef.id;
