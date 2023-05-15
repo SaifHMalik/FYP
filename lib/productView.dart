@@ -55,7 +55,6 @@ class ProductView extends StatefulWidget {
 
 String name = "AAAAA";
 
-// ignore: camel_case_types
 class ProductViewState extends State<ProductView> {
   TextEditingController amount = TextEditingController();
 
@@ -77,14 +76,6 @@ class ProductViewState extends State<ProductView> {
     name = vari.docs.first.data()["name"];
     pr.print(name);
 
-    // DateTime currentTime = DateTime.now();
-
-    // Timestamp bidTime = vari.docs.first.data()["time"];
-    // DateTime endTime = bidTime.toDate();
-
-    // Duration difference = currentTime.difference(endTime);
-    // Duration tenMin = Duration(minutes: 10);
-
     pr.print("BBB");
     if (check > amount) {
       pr.print(
@@ -96,20 +87,6 @@ class ProductViewState extends State<ProductView> {
     }
 
     DocumentReference userDocRef = querySnapshot.docs[0].reference;
-
-    // if (difference < tenMin) {
-    //   Timestamp newTimestamp =
-    //       Timestamp.fromDate(bidTime.toDate().add(Duration(minutes: 10)));
-
-    //   userDocRef.update({
-    //     'actualPrice': amount,
-    //     'time': newTimestamp,
-    //   });
-    // } else {
-    //   userDocRef.update({
-    //     'actualPrice': amount,
-    //   });
-    // }
 
     userDocRef.update({
       'actualPrice': amount,

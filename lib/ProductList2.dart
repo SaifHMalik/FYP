@@ -50,7 +50,7 @@ class _ProductListState2 extends State<ProductList2> {
                       snapshot.data[index]["basePrice"].toDouble();
                   final description = snapshot.data[index]["description"];
                   final actualPrice =
-                      snapshot.data[index]["actualPrice"].toDouble();
+                      snapshot.data[index]["currentBid"].toDouble();
                   final seller = snapshot.data[index]["user"];
                   final sellerEmail = snapshot.data[index]["userEmail"];
                   final category = snapshot.data[index]["category"];
