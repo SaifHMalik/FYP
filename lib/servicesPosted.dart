@@ -3,6 +3,7 @@ import 'package:mazdoor_pk/serviceViewSeller.dart';
 import 'package:mazdoor_pk/addService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'printing.dart' as pr;
 
 class ServicesPosted extends StatefulWidget {
   @override
@@ -14,7 +15,6 @@ class ServicesPostedState extends State<ServicesPosted> {
 
   @override
   Widget build(BuildContext context) {
-    //var currentServices = ['1', '2', '3'];
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
@@ -196,13 +196,35 @@ class ServicesPostedState extends State<ServicesPosted> {
                                               borderRadius:
                                                   BorderRadius.circular(15)))),
                                   onPressed: () {
+                                    pr.print("ssssss");
+                                    final id = docs[index].data()["id"];
+                                    final title = docs[index].data()["title"];
+                                    final price =
+                                        docs[index].data()["price"].toDouble();
+                                    final email = docs[index].data()["email"];
+                                    final category =
+                                        docs[index].data()["category"];
+                                    Timestamp timestamp =
+                                        docs[index].data()["time"] as Timestamp;
+                                    DateTime dateTime = timestamp.toDate();
+                                    final time = dateTime.toString();
+
+                                    pr.print("aaaaaa");
+                                    pr.print(id);
+
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ServiceViewSeller(
-                                                  id: docs[index]["id"],
-                                                )));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ServiceViewSeller(
+                                          id: id,
+                                          title: title,
+                                          price: price,
+                                          time: time,
+                                          email: email,
+                                          category: category,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: const Text('VIEW OFFERS',
                                       style: TextStyle(
