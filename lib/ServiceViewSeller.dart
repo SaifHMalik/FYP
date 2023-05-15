@@ -86,7 +86,44 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
     });
   }
 
-  Future<void> counterOffer() async {}
+  Future<void> createNotification(String email) async {
+    pr.print("Started");
+    final _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+
+    Timestamp now = Timestamp.now();
+    DateTime dateTime = now.toDate();
+    CollectionReference mainCollectionRef =
+        FirebaseFirestore.instance.collection('users');
+
+    QuerySnapshot snapshot =
+        await mainCollectionRef.where('email', isEqualTo: user?.email).get();
+
+    String docID = snapshot.docs.first.id;
+    DocumentReference docRef = mainCollectionRef.doc(docID);
+    pr.print(docID);
+    docRef.collection("notification").add({
+      'data': "Service Started",
+      'sender': '${user?.email}',
+      'time': dateTime.toString(),
+      'user': "Buyer"
+    });
+
+    QuerySnapshot snapshotSell =
+        await mainCollectionRef.where('email', isEqualTo: email).get();
+
+    String docIDSell = snapshotSell.docs.first.id;
+    DocumentReference docRefSell = mainCollectionRef.doc(docIDSell);
+    pr.print("Sell");
+    pr.print(docIDSell);
+
+    docRefSell.collection("notification").add({
+      'data': "Contract Accepted Start Working",
+      'sender': '${email}',
+      'time': dateTime.toString(),
+      'user': "Seller"
+    });
+  }
 
   Future<void> endOffer() async {}
 
@@ -540,6 +577,12 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                             FloatingActionButton(
                                                           elevation: 0.0,
                                                           onPressed: () {
+                                                            pr.print(
+                                                                "Accepting the BID");
+                                                            createNotification(
+                                                                docs![index][
+                                                                    "userEmail"]);
+
                                                             accept(docs[index]
                                                                 ["id"]);
                                                           },
