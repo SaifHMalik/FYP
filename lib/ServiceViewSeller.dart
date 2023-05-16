@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mazdoor_pk/createUserModel.dart';
 import 'package:mazdoor_pk/homeServices.dart';
 import 'package:mazdoor_pk/serviceView.dart';
 import 'printing.dart' as pr;
 import 'counterBid.dart';
+import 'package:mazdoor_pk/note.dart' as note;
 
 class ServiceViewSeller extends StatefulWidget {
   final id;
@@ -85,44 +87,44 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
     });
   }
 
-  Future<void> createNotification(String email) async {
-    pr.print("Started");
-    final _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
+  // Future<void> createNotification(String email) async {
+  //   pr.print("Started");
+  //   final _auth = FirebaseAuth.instance;
+  //   User? user = _auth.currentUser;
 
-    Timestamp now = Timestamp.now();
-    DateTime dateTime = now.toDate();
-    CollectionReference mainCollectionRef =
-        FirebaseFirestore.instance.collection('users');
+  //   Timestamp now = Timestamp.now();
+  //   DateTime dateTime = now.toDate();
+  //   CollectionReference mainCollectionRef =
+  //       FirebaseFirestore.instance.collection('users');
 
-    QuerySnapshot snapshot =
-        await mainCollectionRef.where('email', isEqualTo: user?.email).get();
+  //   QuerySnapshot snapshot =
+  //       await mainCollectionRef.where('email', isEqualTo: user?.email).get();
 
-    String docID = snapshot.docs.first.id;
-    DocumentReference docRef = mainCollectionRef.doc(docID);
-    pr.print(docID);
-    docRef.collection("notification").add({
-      'data': "Service Started",
-      'sender': '${user?.email}',
-      'time': dateTime.toString(),
-      'user': "Buyer"
-    });
+  //   String docID = snapshot.docs.first.id;
+  //   DocumentReference docRef = mainCollectionRef.doc(docID);
+  //   pr.print(docID);
+  //   docRef.collection("notification").add({
+  //     'data': "Service Started",
+  //     'sender': '${user?.email}',
+  //     'time': dateTime.toString(),
+  //     'user': "Buyer"
+  //   });
 
-    QuerySnapshot snapshotSell =
-        await mainCollectionRef.where('email', isEqualTo: email).get();
+  //   QuerySnapshot snapshotSell =
+  //       await mainCollectionRef.where('email', isEqualTo: email).get();
 
-    String docIDSell = snapshotSell.docs.first.id;
-    DocumentReference docRefSell = mainCollectionRef.doc(docIDSell);
-    pr.print("Sell");
-    pr.print(docIDSell);
+  //   String docIDSell = snapshotSell.docs.first.id;
+  //   DocumentReference docRefSell = mainCollectionRef.doc(docIDSell);
+  //   pr.print("Sell");
+  //   pr.print(docIDSell);
 
-    docRefSell.collection("notification").add({
-      'data': "Contract Accepted Start Working",
-      'sender': '${email}',
-      'time': dateTime.toString(),
-      'user': "Seller"
-    });
-  }
+  //   docRefSell.collection("notification").add({
+  //     'data': "Contract Accepted Start Working",
+  //     'sender': '${email}',
+  //     'time': dateTime.toString(),
+  //     'user': "Seller"
+  //   });
+  // }
 
   Future<void> endOffer(String _id) async {
     try {
@@ -306,57 +308,8 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                    Row(
-                                      children: const [
-                                        Text(
-                                          'Base Price: ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Nunito'),
-                                        ),
-                                        Text(
-                                          'PKR 6000/-',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontFamily: 'Nunito'),
-                                        ),
-                                      ],
-                                    ),
                                     const SizedBox(
                                       height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 130,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10),
-                                            child: TextFormField(
-                                                decoration: const InputDecoration(
-                                                    border:
-                                                        UnderlineInputBorder(),
-                                                    labelText: 'Bid Amount',
-                                                    labelStyle: TextStyle(
-                                                        fontFamily: 'Nunito'))),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 25,
-                                        ),
-                                        const Text('Total Bids: ',
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontFamily: 'Nunito')),
-                                        const Text('10',
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontFamily: 'Nunito'))
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 25,
                                     ),
                                     Center(
                                       child: Container(
@@ -372,9 +325,66 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                       const Color.fromARGB(
                                                           255, 80, 232, 176)),
                                               onPressed: ((() {
+                                                buttonCheck();
+                                                if (enableButton == true) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          updateBid(
+                                                        currentBidAmount:
+                                                            widget.price,
+                                                        id: widget.id,
+                                                      ),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  pr.print(
+                                                      "Button is not Enabled");
+
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          'Offer has already been accepted.'),
+                                                      duration:
+                                                          Duration(seconds: 5),
+                                                    ),
+                                                  );
+                                                }
+                                              })),
+                                              child: const Text('UPDATE BID',
+                                                  style: TextStyle(
+                                                      fontFamily: 'Nunito',
+                                                      color: Colors.black87,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w700)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 52,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            child: TextButton(
+                                              style: TextButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color.fromARGB(
+                                                          255, 80, 232, 176)),
+                                              onPressed: ((() {
+                                                buttonCheck();
                                                 if (enableButton == true) {
                                                   endOffer(widget.id);
-                                                  //buttonCheck();
 
                                                   Navigator.push(
                                                       context,
@@ -389,7 +399,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                       .showSnackBar(
                                                     const SnackBar(
                                                       content: Text(
-                                                          'Button Disbaled.'),
+                                                          'Offer has already been accepted.'),
                                                       duration:
                                                           Duration(seconds: 5),
                                                     ),
@@ -547,56 +557,6 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                           ),
                                                         ),
                                                       ),
-                                                      Expanded(
-                                                        child:
-                                                            FloatingActionButton(
-                                                          elevation: 0.0,
-                                                          onPressed: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        counterBid(
-                                                                  currentBidAmount:
-                                                                      widget
-                                                                          .price,
-                                                                  id: widget.id,
-                                                                  parentId: docs[
-                                                                          index]
-                                                                      ["id"],
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                          child: const Text(
-                                                            'Counter BID',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black87,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily:
-                                                                    'Nunito',
-                                                                fontSize: 17),
-                                                          ),
-                                                          backgroundColor:
-                                                              const Color
-                                                                      .fromARGB(
-                                                                  255,
-                                                                  233,
-                                                                  233,
-                                                                  233),
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.0),
-                                                          ),
-                                                        ),
-                                                      ),
                                                     ],
                                                   ),
                                                 ),
@@ -613,6 +573,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                             FloatingActionButton(
                                                           elevation: 0.0,
                                                           onPressed: () {
+                                                            buttonCheck();
                                                             if (enableButton ==
                                                                 true) {
                                                               reject(docs[index]
@@ -625,7 +586,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                                   .showSnackBar(
                                                                 const SnackBar(
                                                                   content: Text(
-                                                                      'Button Disbaled.'),
+                                                                      'Offer has already been accepted.'),
                                                                   duration:
                                                                       Duration(
                                                                           seconds:
@@ -671,13 +632,25 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                             FloatingActionButton(
                                                           elevation: 0.0,
                                                           onPressed: () {
+                                                            buttonCheck();
+                                                            pr.print(enableButton
+                                                                .toString());
                                                             if (enableButton ==
                                                                 true) {
                                                               pr.print(
                                                                   "Accepting the BID");
-                                                              createNotification(
-                                                                  docs![index][
-                                                                      "userEmail"]);
+                                                              // createNotification(
+                                                              //     docs![index][
+                                                              //         "userEmail"]);
+
+                                                              Future<void> obj =
+                                                                  note.createNotification(
+                                                                      docs[index]
+                                                                          [
+                                                                          "userEmail"],
+                                                                      "Service Started",
+                                                                      "Buyer",
+                                                                      "Service Started");
 
                                                               accept(docs[index]
                                                                   ["id"]);
@@ -689,7 +662,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                                   .showSnackBar(
                                                                 const SnackBar(
                                                                   content: Text(
-                                                                      'Button Disbaled.'),
+                                                                      'Offer has already been accepted.'),
                                                                   duration:
                                                                       Duration(
                                                                           seconds:

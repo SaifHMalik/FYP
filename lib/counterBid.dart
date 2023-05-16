@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/NumberButton.dart';
 import 'package:mazdoor_pk/homeServices.dart';
+import 'package:mazdoor_pk/servicesPosted.dart';
 import 'ServiceViewSeller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'printing.dart' as pr;
 import 'select.dart';
 
-class counterBid extends StatefulWidget {
+class updateBid extends StatefulWidget {
   final double currentBidAmount;
   final id;
-  final parentId;
+  //final parentId;
 
-  counterBid(
-      {super.key,
-      required this.currentBidAmount,
-      required this.id,
-      required this.parentId});
+  const updateBid({
+    super.key,
+    required this.currentBidAmount,
+    required this.id,
+  });
 
   @override
   _CashPaymentScreenState createState() => _CashPaymentScreenState();
 }
 
-class _CashPaymentScreenState extends State<counterBid> {
+class _CashPaymentScreenState extends State<updateBid> {
   Future<void> updateBid(double amount, String _parentId) async {
     pr.print("aaaaaa");
     pr.print(_parentId);
@@ -209,15 +210,15 @@ class _CashPaymentScreenState extends State<counterBid> {
                             ),
                           );
 
-                          Navigator.pop(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Select(),
+                              builder: (context) => ServicesPosted(),
                             ),
                           );
                         },
                         child: const Text(
-                          'Counter Bid',
+                          'Update Bid',
                           style: TextStyle(fontSize: 18, color: Colors.black),
                         ),
                       ),

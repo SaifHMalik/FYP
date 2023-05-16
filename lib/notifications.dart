@@ -1,14 +1,40 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'printing.dart' as pr;
 import 'package:timeago/timeago.dart' as timeago;
+import 'servicesPosted.dart';
 
 class Notifications extends StatefulWidget {
   @override
   State<Notifications> createState() => _NotificationsState();
 }
+
+// Future<void> createNotification(
+//     String email, String data, String userType, String messageType) async {
+//   pr.print("Started");
+//   final _auth = FirebaseAuth.instance;
+//   User? user = _auth.currentUser;
+
+//   Timestamp now = Timestamp.now();
+//   DateTime dateTime = now.toDate();
+//   CollectionReference mainCollectionRef =
+//       FirebaseFirestore.instance.collection('users');
+
+//   QuerySnapshot snapshot =
+//       await mainCollectionRef.where('email', isEqualTo: user?.email).get();
+
+//   String docID = snapshot.docs.first.id;
+//   DocumentReference docRef = mainCollectionRef.doc(docID);
+//   pr.print(docID);
+//   docRef.collection("notification").add({
+//     'data': data,
+//     'sender': email,
+//     'time': dateTime.toString(),
+//     'user': userType,
+//     'messageType': messageType,
+//   });
+// }
 
 class _NotificationsState extends State<Notifications> {
   // Future<void> createNotification() async {
@@ -29,6 +55,58 @@ class _NotificationsState extends State<Notifications> {
   //         .collection("notification")
   //         .add({'data': 'N/A', 'sender': 'N/A', 'time': 'N/A', 'user': "N/A"});
   //   }
+  // }
+
+  static Future<void> createNotification(
+      String email, String data, String userType, String messageType) async {
+    pr.print("Started");
+    final _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+
+    Timestamp now = Timestamp.now();
+    DateTime dateTime = now.toDate();
+    CollectionReference mainCollectionRef =
+        FirebaseFirestore.instance.collection('users');
+
+    QuerySnapshot snapshot =
+        await mainCollectionRef.where('email', isEqualTo: user?.email).get();
+
+    String docID = snapshot.docs.first.id;
+    DocumentReference docRef = mainCollectionRef.doc(docID);
+    pr.print(docID);
+    docRef.collection("notification").add({
+      'data': data,
+      'sender': email,
+      'time': dateTime.toString(),
+      'user': userType,
+      'messageType': messageType,
+    });
+  }
+
+  // Future<void> createNotification(
+  //     String email, String data, String userType, String messageType) async {
+  //   pr.print("Started");
+  //   final _auth = FirebaseAuth.instance;
+  //   User? user = _auth.currentUser;
+
+  //   Timestamp now = Timestamp.now();
+  //   DateTime dateTime = now.toDate();
+  //   CollectionReference mainCollectionRef =
+  //       FirebaseFirestore.instance.collection('users');
+
+  //   QuerySnapshot snapshot =
+  //       await mainCollectionRef.where('email', isEqualTo: user?.email).get();
+
+  //   String docID = snapshot.docs.first.id;
+  //   DocumentReference docRef = mainCollectionRef.doc(docID);
+  //   pr.print(docID);
+  //   docRef.collection("notification").add({
+  //     'data': data,
+  //     'sender': email,
+  //     'time': dateTime.toString(),
+  //     'user': userType,
+  //     'messageType': messageType,
+  //   });
   // }
 
   Future getData() async {
@@ -114,8 +192,12 @@ class _NotificationsState extends State<Notifications> {
 
                             return GestureDetector(
                               onTap: () {
-                                pr.print("AAAAAAAAAAAAAAAAAA");
-                                //createNotification();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ServicesPosted(),
+                                  ),
+                                );
                               },
                               child: Container(
                                 margin: const EdgeInsets.symmetric(
