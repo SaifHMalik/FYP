@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mazdoor_pk/chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mazdoor_pk/homeServices.dart';
+import 'package:mazdoor_pk/serviceView.dart';
 import 'printing.dart' as pr;
 import 'counterBid.dart';
 
@@ -50,15 +52,15 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
     subDocRef.update({"status": "Rejected"});
   }
 
-  Future getData(String _id) async {
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot snap = await firestore
-        .collection("Service")
-        .doc(_id)
-        .collection("ServiceOrders")
-        .get();
-    return snap.docs;
-  }
+  // Future getData(String _id) async {
+  //   var firestore = FirebaseFirestore.instance;
+  //   QuerySnapshot snap = await firestore
+  //       .collection("Service")
+  //       .doc(_id)
+  //       .collection("ServiceOrders")
+  //       .get();
+  //   return snap.docs;
+  // }
 
   Future<void> getName(String _id) async {
     pr.print("aaaaaa");
@@ -125,10 +127,23 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
     });
   }
 
-  Future<void> endOffer() async {}
+  Future<void> endOffer(String _id) async {
+    // try {
+    //   await FirebaseFirestore.instance.collection("Service").doc(_id).delete();
+    //   pr.print("Document Succesfully deleted");
+    // } catch (e) {
+    //   print('Error deleting document: $e');
+    // }
+
+    pr.print("Deleted");
+  }
+
+  Future<void> buttonCheck() async {}
 
   @override
   Widget build(BuildContext context) {
+    bool isButtonEnabled = true;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -303,22 +318,13 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                       const Color.fromARGB(
                                                           255, 80, 232, 176)),
                                               onPressed: ((() {
+                                                endOffer(widget.id);
+
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            ServiceViewSeller(
-                                                              id: widget.id,
-                                                              title:
-                                                                  widget.title,
-                                                              time: widget.time,
-                                                              email:
-                                                                  widget.email,
-                                                              category: widget
-                                                                  .category,
-                                                              price:
-                                                                  widget.price,
-                                                            )));
+                                                            HomeServices()));
                                               })),
                                               child: const Text('END OFFER',
                                                   style: TextStyle(

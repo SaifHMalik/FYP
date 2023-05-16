@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'printing.dart' as pr;
+import 'package:timeago/timeago.dart' as timeago;
 
 class Notifications extends StatefulWidget {
   @override
@@ -37,6 +38,8 @@ class _NotificationsState extends State<Notifications> {
     CollectionReference mainCollectionRef =
         FirebaseFirestore.instance.collection('users');
 
+    pr.print("email: ${user?.email}");
+
     QuerySnapshot snapshot =
         await mainCollectionRef.where('email', isEqualTo: user?.email).get();
 
@@ -65,60 +68,7 @@ class _NotificationsState extends State<Notifications> {
     // final docs = getData();
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    final note = [
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-      "Electrician is on his way",
-      "sent you an Offer on I want a plumber to repair my basin",
-    ];
-    var noteWriter = [
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir",
-      "Ahmad Nazeer",
-      "Muhammad Yasir"
-    ];
-    var timings = [
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago",
-      "21 minutes ago",
-      "1 hour ago"
-    ];
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -151,6 +101,17 @@ class _NotificationsState extends State<Notifications> {
                           itemCount: snapshot.data.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
+                            pr.print("00000");
+                            String stringTime = snapshot.data[index]["time"];
+                            pr.print("11111");
+                            DateTime dateTime = DateTime.parse(stringTime);
+                            pr.print("22222");
+
+                            String timeAgo =
+                                timeago.format(dateTime, locale: 'en_short');
+                            pr.print(timeAgo);
+                            pr.print("33333");
+
                             return GestureDetector(
                               onTap: () {
                                 pr.print("AAAAAAAAAAAAAAAAAA");
@@ -183,16 +144,18 @@ class _NotificationsState extends State<Notifications> {
                                         TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: snapshot.data[index]
-                                                  ["time"],
+                                              text: "${timeAgo} ago",
                                             ),
                                             TextSpan(
-                                              text: "\n" + noteWriter[index],
+                                              text: "\n" +
+                                                  snapshot.data[index]
+                                                      ["sender"],
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             TextSpan(
-                                              text: " - " + note[index],
+                                              text: " - " +
+                                                  snapshot.data[index]["data"],
                                             )
                                           ],
                                         ),
