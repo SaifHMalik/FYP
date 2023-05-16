@@ -197,20 +197,19 @@ class ServicesPostedState extends State<ServicesPosted> {
                                                   BorderRadius.circular(15)))),
                                   onPressed: () {
                                     pr.print("ssssss");
-                                    final id = docs[index].data()["id"];
-                                    final title = docs[index].data()["title"];
-                                    final price =
-                                        docs[index].data()["price"].toDouble();
-                                    final email = docs[index].data()["email"];
-                                    final category =
-                                        docs[index].data()["category"];
-                                    Timestamp timestamp =
-                                        docs[index].data()["time"] as Timestamp;
-                                    DateTime dateTime = timestamp.toDate();
-                                    final time = dateTime.toString();
-
-                                    pr.print("aaaaaa");
+                                    final id = docs[index].id;
+                                    pr.print("bbbbb");
                                     pr.print(id);
+                                    final title = docs[index].data()["title"];
+                                    pr.print("ccccc");
+                                    final price = docs[index].data()["price"];
+                                    final email =
+                                        docs[index].data()["userEmail"];
+                                    String categories = "Electrician";
+                                    // Timestamp timestamp =
+                                    //     docs[index].data()["time"] as Timestamp;
+                                    DateTime dateTime = DateTime.now();
+                                    final time = dateTime.toString();
 
                                     Navigator.push(
                                       context,
@@ -221,7 +220,7 @@ class ServicesPostedState extends State<ServicesPosted> {
                                           price: price,
                                           time: time,
                                           email: email,
-                                          category: category,
+                                          category: categories,
                                         ),
                                       ),
                                     );

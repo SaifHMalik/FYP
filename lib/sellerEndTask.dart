@@ -9,7 +9,7 @@ import 'printing.dart' as pr;
 import 'counterBid.dart';
 import 'package:mazdoor_pk/note.dart' as note;
 
-class ServiceViewSeller extends StatefulWidget {
+class SellerEndTask extends StatefulWidget {
   final id;
   final title;
   final price;
@@ -17,7 +17,7 @@ class ServiceViewSeller extends StatefulWidget {
   final time;
   final email;
 
-  const ServiceViewSeller(
+  const SellerEndTask(
       {required this.id,
       required this.title,
       required this.price,
@@ -26,14 +26,14 @@ class ServiceViewSeller extends StatefulWidget {
       required this.email});
 
   @override
-  State<ServiceViewSeller> createState() => ServiceViewSellerState();
+  State<SellerEndTask> createState() => ServiceViewSellerState();
 }
 
 String name = "AAAA";
 bool enableButton = true;
 String acceptedId = "";
 
-class ServiceViewSellerState extends State<ServiceViewSeller> {
+class ServiceViewSellerState extends State<SellerEndTask> {
   Future<void> accept(String _id) async {
     CollectionReference subCollectionRef = FirebaseFirestore.instance
         .collection('Service')
@@ -168,7 +168,6 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
     pr.print("CCCCCCCCCCCCCCC");
 
     for (var doc in snapshots.docs) {
-      pr.print(doc.reference.id);
       pr.print("DDDDDDDDDDDDDDDDDDDDD");
       await doc.reference.delete();
     }
@@ -195,19 +194,6 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
 
   @override
   Widget build(BuildContext context) {
-    pr.print("AAAABBBCCCDDD");
-    pr.print(widget.id);
-    pr.print("AAAABBBCCCDDD");
-    pr.print(widget.email);
-    pr.print("AAAABBBCCCDDD");
-    pr.print(widget.time);
-    pr.print("AAAABBBCCCDDD");
-    pr.print(widget.price);
-    pr.print("AAAABBBCCCDDD");
-    pr.print(widget.title);
-    pr.print("AAAABBBCCCDDD");
-    pr.print(widget.category);
-
     bool isButtonEnabled = true;
 
     return MaterialApp(
@@ -587,7 +573,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                             if (enableButton ==
                                                                 true) {
                                                               reject(docs[index]
-                                                                  ["id"]);
+                                                                  .id);
                                                             } else {
                                                               pr.print(
                                                                   "Button is Disabled");
@@ -685,29 +671,11 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                                       ["name"],
                                                                   name);
 
-                                                              note.CreateNotificationsExtra(
-                                                                  docs[index][
-                                                                      "userEmail"],
-                                                                  "Service Started",
-                                                                  "Seller",
-                                                                  "Service Started",
-                                                                  widget.id,
-                                                                  widget.title,
-                                                                  widget
-                                                                      .category,
-                                                                  widget.time,
-                                                                  widget.email,
-                                                                  docs[index]
-                                                                      ["price"],
-                                                                  docs[index]
-                                                                      ["name"],
-                                                                  name);
-
                                                               pr.print(
                                                                   "Something is wrong");
 
                                                               accept(docs[index]
-                                                                  ["id"]);
+                                                                  .id);
                                                             } else {
                                                               pr.print(
                                                                   "Button Disabled");
@@ -771,411 +739,7 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                 ),
               );
             },
-          )
-
-              //   Column(
-              //   children: [
-              //     Container(
-              //       width: double.infinity,
-              //       height: 300,
-              //       decoration: const BoxDecoration(
-              //         image: DecorationImage(
-              //           image: NetworkImage(
-              //               'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/UK_BS1363_double_wall_socket.jpg/800px-UK_BS1363_double_wall_socket.jpg'),
-              //           fit: BoxFit.fitWidth,
-              //         ),
-              //       ),
-              //       child: null,
-              //     ),
-              //     SafeArea(
-              //         child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             children: [
-              //           Center(
-              //               child: Card(
-              //                   margin: const EdgeInsets.all(11),
-              //                   child: Padding(
-              //                       padding: const EdgeInsets.all(18),
-              //                       child: Column(
-              //                         crossAxisAlignment:
-              //                             CrossAxisAlignment.start,
-              //                         children: [
-              //                           Text(widget.title,
-              //                               style: TextStyle(
-              //                                   fontSize: 23,
-              //                                   fontFamily: 'Nunito',
-              //                                   fontWeight: FontWeight.w600)),
-              //                           const SizedBox(height: 15),
-              //                           Row(
-              //                             children: const [
-              //                               CircleAvatar(
-              //                                 backgroundImage:
-              //                                     AssetImage('profile.jpg'),
-              //                               ),
-              //                               SizedBox(
-              //                                 width: 10,
-              //                               ),
-              //                               Text('Vinesh Juriasinghani',
-              //                                   style: TextStyle(
-              //                                       fontFamily: 'Nunito')),
-              //                             ],
-              //                           ),
-              //                           const SizedBox(height: 20),
-              //                           const Text(
-              //                               'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',
-              //                               style:
-              //                                   TextStyle(fontFamily: 'Nunito')),
-              //                           const SizedBox(height: 20),
-              //                           Row(
-              //                             children: [
-              //                               Text(
-              //                                 'Ends in: ',
-              //                                 style: TextStyle(
-              //                                     color: Color.fromRGBO(
-              //                                         40, 175, 125, 1),
-              //                                     fontWeight: FontWeight.w900,
-              //                                     fontSize: 17,
-              //                                     fontFamily: 'Nunito'),
-              //                               ),
-              //                               Text(
-              //                                 widget.time,
-              //                                 style: TextStyle(
-              //                                     color: Color.fromRGBO(
-              //                                         40, 175, 125, 1),
-              //                                     fontWeight: FontWeight.w700,
-              //                                     fontSize: 17,
-              //                                     fontFamily: 'Nunito'),
-              //                               ),
-              //                             ],
-              //                           ),
-              //                           const SizedBox(
-              //                             height: 20,
-              //                           ),
-              //                           Row(
-              //                             children: [
-              //                               Text(
-              //                                 'Current Bid: ',
-              //                                 style: TextStyle(
-              //                                     color: Colors.grey,
-              //                                     fontWeight: FontWeight.bold,
-              //                                     fontFamily: 'Nunito'),
-              //                               ),
-              //                               Text(
-              //                                 'PKR ${widget.price}/-',
-              //                                 style: TextStyle(
-              //                                     color: Colors.black,
-              //                                     fontSize: 20,
-              //                                     fontFamily: 'Nunito'),
-              //                               ),
-              //                             ],
-              //                           ),
-              //                           const SizedBox(
-              //                             height: 5,
-              //                           ),
-              //                           Row(
-              //                             children: const [
-              //                               Text(
-              //                                 'Base Price: ',
-              //                                 style: TextStyle(
-              //                                     color: Colors.black,
-              //                                     fontWeight: FontWeight.bold,
-              //                                     fontFamily: 'Nunito'),
-              //                               ),
-              //                               Text(
-              //                                 'PKR 6000/-',
-              //                                 style: TextStyle(
-              //                                     color: Colors.black,
-              //                                     fontFamily: 'Nunito'),
-              //                               ),
-              //                             ],
-              //                           ),
-              //                           const SizedBox(
-              //                             height: 10,
-              //                           ),
-              //                           Row(
-              //                             children: [
-              //                               SizedBox(
-              //                                 width: 130,
-              //                                 child: Padding(
-              //                                   padding: const EdgeInsets.only(
-              //                                       bottom: 10),
-              //                                   child: TextFormField(
-              //                                       decoration: const InputDecoration(
-              //                                           border:
-              //                                               UnderlineInputBorder(),
-              //                                           labelText: 'Bid Amount',
-              //                                           labelStyle: TextStyle(
-              //                                               fontFamily:
-              //                                                   'Nunito'))),
-              //                                 ),
-              //                               ),
-              //                               const SizedBox(
-              //                                 width: 25,
-              //                               ),
-              //                               const Text('Total Bids: ',
-              //                                   style: TextStyle(
-              //                                       color: Colors.black87,
-              //                                       fontFamily: 'Nunito')),
-              //                               const Text('10',
-              //                                   style: TextStyle(
-              //                                       color: Colors.black87,
-              //                                       fontFamily: 'Nunito'))
-              //                             ],
-              //                           ),
-              //                           const SizedBox(
-              //                             height: 25,
-              //                           ),
-              //                           Center(
-              //                             child: Container(
-              //                               child: SizedBox(
-              //                                 width: double.infinity,
-              //                                 height: 52,
-              //                                 child: ClipRRect(
-              //                                   borderRadius:
-              //                                       BorderRadius.circular(15),
-              //                                   child: TextButton(
-              //                                     style: TextButton.styleFrom(
-              //                                         backgroundColor:
-              //                                             const Color.fromARGB(
-              //                                                 255, 80, 232, 176)),
-              //                                     onPressed: ((() {
-              //                                       Navigator.push(
-              //                                           context,
-              //                                           MaterialPageRoute(
-              //                                               builder: (context) =>
-              //                                                   ServiceViewSeller(
-              //                                                     id: widget.id,
-              //                                                     title: widget
-              //                                                         .title,
-              //                                                     time:
-              //                                                         widget.time,
-              //                                                     email: widget
-              //                                                         .email,
-              //                                                     category: widget
-              //                                                         .category,
-              //                                                     price: widget
-              //                                                         .price,
-              //                                                   )));
-              //                                     })),
-              //                                     child: const Text('END OFFER',
-              //                                         style: TextStyle(
-              //                                             fontFamily: 'Nunito',
-              //                                             color: Colors.black87,
-              //                                             fontSize: 18,
-              //                                             fontWeight:
-              //                                                 FontWeight.w700)),
-              //                                   ),
-              //                                 ),
-              //                               ),
-              //                             ),
-              //                           ),
-              //                         ],
-              //                       )))),
-              //           ListView.builder(
-              //             itemCount: 3,
-              //             shrinkWrap: true,
-              //             itemBuilder: (context, index) {
-              //               return Column(
-              //                 mainAxisAlignment: MainAxisAlignment.center,
-              //                 children: [
-              //                   Center(
-              //                     child: Card(
-              //                       margin: const EdgeInsets.all(11),
-              //                       child: Padding(
-              //                         padding: const EdgeInsets.all(15),
-              //                         child: Column(
-              //                           crossAxisAlignment:
-              //                               CrossAxisAlignment.start,
-              //                           children: [
-              //                             const SizedBox(height: 15),
-              //                             Row(
-              //                               children: const [
-              //                                 CircleAvatar(
-              //                                   backgroundImage:
-              //                                       AssetImage('profile.jpg'),
-              //                                 ),
-              //                                 SizedBox(
-              //                                   width: 10,
-              //                                 ),
-              //                                 Text(
-              //                                   "James Wood",
-              //                                   style: TextStyle(
-              //                                       fontFamily: 'Nunito',
-              //                                       fontSize: 18),
-              //                                 ),
-              //                               ],
-              //                             ),
-              //                             const SizedBox(height: 10),
-              //                             const Text(
-              //                               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-              //                               style: TextStyle(
-              //                                   fontFamily: 'Nunito',
-              //                                   fontSize: 15),
-              //                             ),
-              //                             const SizedBox(
-              //                               height: 20,
-              //                             ),
-              //                             Row(
-              //                               children: const [
-              //                                 Text(
-              //                                   'Offered: ',
-              //                                   style: TextStyle(
-              //                                       color: Colors.grey,
-              //                                       fontWeight: FontWeight.bold,
-              //                                       fontFamily: 'Nunito',
-              //                                       fontSize: 15),
-              //                                 ),
-              //                                 Text(
-              //                                   "PKR " + "13,000" + "/-",
-              //                                   style: TextStyle(
-              //                                       color: Colors.black,
-              //                                       fontSize: 20,
-              //                                       fontFamily: 'Nunito'),
-              //                                 ),
-              //                               ],
-              //                             ),
-              //                             const SizedBox(
-              //                               height: 25,
-              //                             ),
-              //                             Container(
-              //                               height: 52,
-              //                               margin: const EdgeInsets.symmetric(
-              //                                   vertical: 5),
-              //                               child: Row(
-              //                                 children: [
-              //                                   GestureDetector(
-              //                                     onTap: () {
-              //                                       Navigator.push(
-              //                                           context,
-              //                                           MaterialPageRoute(
-              //                                               builder: (context) =>
-              //                                                   ChatMessaging()));
-              //                                     },
-              //                                     child: Container(
-              //                                       width: 52,
-              //                                       margin: const EdgeInsets.only(
-              //                                           right: 10),
-              //                                       decoration: BoxDecoration(
-              //                                           borderRadius:
-              //                                               BorderRadius.circular(
-              //                                                   10),
-              //                                           color:
-              //                                               const Color.fromARGB(
-              //                                                   255,
-              //                                                   11,
-              //                                                   119,
-              //                                                   207)),
-              //                                       child: const Center(
-              //                                         child: Icon(
-              //                                           Icons.message,
-              //                                           size: 33.0,
-              //                                           color: Color.fromRGBO(
-              //                                               255, 255, 255, 0.9),
-              //                                         ),
-              //                                       ),
-              //                                     ),
-              //                                   ),
-              //                                   Expanded(
-              //                                     child: FloatingActionButton(
-              //                                       elevation: 0.0,
-              //                                       onPressed: () {},
-              //                                       child: const Text(
-              //                                         'Counter Offer',
-              //                                         style: TextStyle(
-              //                                             color: Colors.black87,
-              //                                             fontWeight:
-              //                                                 FontWeight.bold,
-              //                                             fontFamily: 'Nunito',
-              //                                             fontSize: 17),
-              //                                       ),
-              //                                       backgroundColor:
-              //                                           const Color.fromARGB(
-              //                                               255, 233, 233, 233),
-              //                                       shape: RoundedRectangleBorder(
-              //                                         borderRadius:
-              //                                             BorderRadius.circular(
-              //                                                 10.0),
-              //                                       ),
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                             ),
-              //                             Container(
-              //                               height: 52,
-              //                               margin: const EdgeInsets.symmetric(
-              //                                   vertical: 5),
-              //                               child: Row(
-              //                                 children: [
-              //                                   Expanded(
-              //                                     // padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-              //                                     // width: MediaQuery.of(context).size.width / 2.25,
-              //                                     child: FloatingActionButton(
-              //                                       elevation: 0.0,
-              //                                       onPressed: () {},
-              //                                       child: const Text('Reject',
-              //                                           style: TextStyle(
-              //                                               color: Color.fromRGBO(
-              //                                                   255,
-              //                                                   255,
-              //                                                   255,
-              //                                                   0.9),
-              //                                               fontWeight:
-              //                                                   FontWeight.bold,
-              //                                               fontFamily: 'Nunito',
-              //                                               fontSize: 17)),
-              //                                       backgroundColor: Colors.red,
-              //                                       shape: RoundedRectangleBorder(
-              //                                         borderRadius:
-              //                                             BorderRadius.circular(
-              //                                                 10.0),
-              //                                       ),
-              //                                     ),
-              //                                   ),
-              //                                   const SizedBox(
-              //                                     width: 10,
-              //                                   ),
-              //                                   Expanded(
-              //                                     // padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-              //                                     // width: MediaQuery.of(context).size.width / 2.25,
-              //                                     child: FloatingActionButton(
-              //                                       elevation: 0.0,
-              //                                       onPressed: () {},
-              //                                       child: const Text('Accept',
-              //                                           style: TextStyle(
-              //                                               color: Color.fromRGBO(
-              //                                                   255,
-              //                                                   255,
-              //                                                   255,
-              //                                                   0.9),
-              //                                               fontWeight:
-              //                                                   FontWeight.bold,
-              //                                               fontFamily: 'Nunito',
-              //                                               fontSize: 17)),
-              //                                       backgroundColor: Colors.green,
-              //                                       shape: RoundedRectangleBorder(
-              //                                         borderRadius:
-              //                                             BorderRadius.circular(
-              //                                                 10.0),
-              //                                       ),
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   ),
-              //                 ],
-              //               );
-              //             },
-              //           ),
-              //         ])),
-              //   ],
-              // ),
-              ),
+          )),
           Positioned(
             top: 20,
             left: 20,

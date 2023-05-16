@@ -54,26 +54,10 @@ class ServiceViewState extends State<ServiceView> {
 
     final currentUser = FirebaseAuth.instance.currentUser;
 
-    // final parentDocRef =
-    //     FirebaseFirestore.instance.collection('Service').doc(widget.id);
-
-    // final subcollectionRef = parentDocRef.collection('ServiceOrders');
-
-    // final newDocRef = subcollectionRef.doc();
-    // final newDocId = newDocRef.id;
-
     final subcollectionRef = FirebaseFirestore.instance
         .collection('Service')
         .doc(_id)
         .collection('ServiceOrders');
-
-    // Map<String, dynamic> serviceData = {
-    //   'title': widget.title,
-    //   'userEmail': currentUser?.email,
-    //   'price': amount,
-    //   'id': subcollectionRef.,
-    //   'status': "Not Accepted",
-    // };
 
     var nameOfBidder = await FirebaseFirestore.instance
         .collection('users')

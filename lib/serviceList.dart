@@ -77,16 +77,18 @@ class _ServiceListState extends State<ServiceList> {
                               itemBuilder: (context, index) {
                                 final String email =
                                     snapshot.data[index]["userEmail"];
-                                final String id = snapshot.data[index]["id"];
+                                final String id = snapshot.data[index].id;
                                 final title = snapshot.data[index]["title"];
-                                final price =
-                                    snapshot.data[index]["price"].toDouble();
+                                final price = snapshot.data[index]["currentBid"]
+                                    .toDouble();
                                 final category =
                                     snapshot.data[index]["category"];
                                 Timestamp timestamp =
                                     snapshot.data[index]["time"] as Timestamp;
                                 DateTime dateTime = timestamp.toDate();
                                 final time = dateTime.toString();
+                                pr.print("Checking for Email");
+                                pr.print(email);
 
                                 return LayoutBuilder(builder:
                                     (BuildContext context,

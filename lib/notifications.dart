@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'printing.dart' as pr;
 import 'package:timeago/timeago.dart' as timeago;
 import 'servicesPosted.dart';
+import 'ServiceViewSeller.dart';
 
 class Notifications extends StatefulWidget {
   @override
@@ -192,12 +193,55 @@ class _NotificationsState extends State<Notifications> {
 
                             return GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ServicesPosted(),
-                                  ),
-                                );
+                                pr.print("Pressed OnTap");
+                                if (snapshot.data[index]["user"] == "Buyer" &&
+                                    snapshot.data[index]["messageType"] ==
+                                        "Service Started") {
+                                  pr.print("AAAAAA");
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ServiceViewSeller(
+                                          id: snapshot.data[index]["id"],
+                                          title: snapshot.data[index]["title"],
+                                          price: snapshot.data[index]
+                                              ["totalBill"],
+                                          category: snapshot.data[index]
+                                              ["category"],
+                                          time: snapshot.data[index]["time"],
+                                          email: snapshot.data[index]
+                                              ["buyerEmail"]),
+                                    ),
+                                  );
+                                } else if (snapshot.data[index]["user"] ==
+                                        "Seller" &&
+                                    snapshot.data[index]["messageType"] ==
+                                        "Service Started") {
+                                  pr.print(snapshot.data[index]["user"]);
+                                  pr.print(snapshot.data[index]["messageType"]);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => ServiceViewSeller(
+                                  //         id: snapshot.data[index].id,
+                                  //         title: snapshot.data[index]["title"],
+                                  //         price: snapshot.data[index]
+                                  //             ["totalBill"],
+                                  //         category: snapshot.data[index]
+                                  //             ["category"],
+                                  //         time: snapshot.data[index]["time"],
+                                  //         email: snapshot.data[index]
+                                  //             ["buyerEmail"]),
+                                  //   ),
+                                  // );
+                                }
+
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ServicesPosted(),
+                                //   ),
+                                // );
                               },
                               child: Container(
                                 margin: const EdgeInsets.symmetric(
