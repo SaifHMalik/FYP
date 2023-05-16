@@ -30,6 +30,8 @@ class ServiceViewSeller extends StatefulWidget {
 }
 
 String name = "AAAA";
+bool enableButton = true;
+String acceptedId = "";
 
 class ServiceViewSellerState extends State<ServiceViewSeller> {
   Future<void> accept(String _id) async {
@@ -40,6 +42,8 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
     DocumentReference subDocRef = subCollectionRef.doc(_id);
 
     subDocRef.update({"status": "Accepted"});
+    pr.print("22222222222222222222222222222222");
+    removeUnaccepted();
   }
 
   Future<void> reject(String _id) async {
@@ -49,18 +53,9 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
         .collection('ServiceOrders');
     DocumentReference subDocRef = subCollectionRef.doc(_id);
 
-    subDocRef.update({"status": "Rejected"});
+    // subDocRef.update({"status": "Rejected"});
+    subDocRef.delete();
   }
-
-  // Future getData(String _id) async {
-  //   var firestore = FirebaseFirestore.instance;
-  //   QuerySnapshot snap = await firestore
-  //       .collection("Service")
-  //       .doc(_id)
-  //       .collection("ServiceOrders")
-  //       .get();
-  //   return snap.docs;
-  // }
 
   Future<void> getName(String _id) async {
     pr.print("aaaaaa");
@@ -79,12 +74,14 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
 
     name = vari.docs.first.data()["name"];
     pr.print(name);
+    buttonCheck();
   }
 
   Future<Null> getRegresh() async {
     await Future.delayed(Duration(seconds: 3));
     setState(() {
       getName(widget.id);
+      buttonCheck();
     });
   }
 
@@ -128,17 +125,74 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
   }
 
   Future<void> endOffer(String _id) async {
-    // try {
-    //   await FirebaseFirestore.instance.collection("Service").doc(_id).delete();
-    //   pr.print("Document Succesfully deleted");
-    // } catch (e) {
-    //   print('Error deleting document: $e');
-    // }
+    try {
+      await FirebaseFirestore.instance.collection("Service").doc(_id).delete();
+      pr.print("Document Succesfully deleted");
+    } catch (e) {
+      print('Error deleting document: $e');
+    }
 
     pr.print("Deleted");
   }
 
-  Future<void> buttonCheck() async {}
+  Future<void> buttonCheck() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("Service")
+        .doc(widget.id)
+        .collection("ServiceOrders")
+        .where("status", isEqualTo: "Accepted")
+        .get();
+
+    pr.print("checkingButton");
+
+    if (snapshot.docs.length > 0) {
+      enableButton = false;
+    } else {
+      enableButton = true;
+    }
+
+    pr.print(enableButton.toString());
+  }
+
+  Future<void> removeUnaccepted() async {
+    pr.print("AAAAAAAAAAAAAAAAAA");
+    var collection = FirebaseFirestore.instance
+        .collection('Service')
+        .doc(widget.id)
+        .collection('ServiceOrders')
+        .where('status', isNotEqualTo: 'Accepted');
+
+    pr.print("BBBBBBBBBBBBBBBBBBBBBBB");
+
+    var snapshots = await collection.get();
+
+    pr.print("CCCCCCCCCCCCCCC");
+
+    for (var doc in snapshots.docs) {
+      pr.print(doc.reference.id);
+      pr.print("DDDDDDDDDDDDDDDDDDDDD");
+      await doc.reference.delete();
+    }
+
+    pr.print("EEEEEEEEEEEEEEEEEEEE");
+
+    // final subcollectionRef = FirebaseFirestore.instance
+    //     .collection('yourCollection')
+    //     .doc('yourDocument')
+    //     .collection('yourSubcollection');
+
+    // final query = subcollectionRef.where('status', isNotEqualTo: 'Accepted');
+
+    // final snapshot = await query.get();
+
+    // final batch = FirebaseFirestore.instance.batch();
+
+    // snapshot.docs.forEach((doc) {
+    //   batch.delete(doc.reference);
+    // });
+
+    // await batch.commit();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -318,13 +372,29 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                       const Color.fromARGB(
                                                           255, 80, 232, 176)),
                                               onPressed: ((() {
-                                                endOffer(widget.id);
+                                                if (enableButton == true) {
+                                                  endOffer(widget.id);
+                                                  //buttonCheck();
 
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            HomeServices()));
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              HomeServices()));
+                                                } else {
+                                                  pr.print(
+                                                      "Button is not Enabled");
+
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          'Button Disbaled.'),
+                                                      duration:
+                                                          Duration(seconds: 5),
+                                                    ),
+                                                  );
+                                                }
                                               })),
                                               child: const Text('END OFFER',
                                                   style: TextStyle(
@@ -543,8 +613,26 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                             FloatingActionButton(
                                                           elevation: 0.0,
                                                           onPressed: () {
-                                                            reject(docs[index]
-                                                                ["id"]);
+                                                            if (enableButton ==
+                                                                true) {
+                                                              reject(docs[index]
+                                                                  ["id"]);
+                                                            } else {
+                                                              pr.print(
+                                                                  "Button is Disabled");
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                const SnackBar(
+                                                                  content: Text(
+                                                                      'Button Disbaled.'),
+                                                                  duration:
+                                                                      Duration(
+                                                                          seconds:
+                                                                              5),
+                                                                ),
+                                                              );
+                                                            }
                                                           },
                                                           child: const Text(
                                                               'Reject',
@@ -583,14 +671,32 @@ class ServiceViewSellerState extends State<ServiceViewSeller> {
                                                             FloatingActionButton(
                                                           elevation: 0.0,
                                                           onPressed: () {
-                                                            pr.print(
-                                                                "Accepting the BID");
-                                                            createNotification(
-                                                                docs![index][
-                                                                    "userEmail"]);
+                                                            if (enableButton ==
+                                                                true) {
+                                                              pr.print(
+                                                                  "Accepting the BID");
+                                                              createNotification(
+                                                                  docs![index][
+                                                                      "userEmail"]);
 
-                                                            accept(docs[index]
-                                                                ["id"]);
+                                                              accept(docs[index]
+                                                                  ["id"]);
+                                                            } else {
+                                                              pr.print(
+                                                                  "Button Disabled");
+                                                              ScaffoldMessenger
+                                                                      .of(context)
+                                                                  .showSnackBar(
+                                                                const SnackBar(
+                                                                  content: Text(
+                                                                      'Button Disbaled.'),
+                                                                  duration:
+                                                                      Duration(
+                                                                          seconds:
+                                                                              5),
+                                                                ),
+                                                              );
+                                                            }
                                                           },
                                                           child: const Text(
                                                               'Accept',
